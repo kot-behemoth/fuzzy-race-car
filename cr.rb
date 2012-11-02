@@ -30,6 +30,19 @@ def S( t, τ, control_points, start_point )
   c[0] + c[1]*t + c[2]*(t**2) + c[3]*(t**3)
 end
 
+def generate_full_CR( step, points, τ )
+
+  segments = Array.new
+
+  # -3 is because we're starting from p_i-2 to p_i+1
+  # so we are also starting from the point p_i+2
+  (points.length-3).times do |i|
+    (0..1).step( step ) { |t| segments << S( t, τ, points, 2+i ) }
+  end
+
+  segments
+end
+
 Gnuplot.open do |gp|
   Gnuplot::Plot.new( gp ) do |p|
 
@@ -51,15 +64,11 @@ Gnuplot.open do |gp|
     p.title  'Catmull-Rom Spline'
     p.ylabel 'y'
     p.xlabel 'x'
-    
-    # Generate the curve
-    cr = Array.new
-    (0..1).step(0.01) { |t| cr << S( t, 1, points, 2 ) }
-    (0..1).step(0.01) { |t| cr << S( t, 1, points, 3 ) }
-    (0..1).step(0.01) { |t| cr << S( t, 1, points, 4 ) }
 
-    x_cr = cr.map { |p| p[0] }
-    y_cr = cr.map { |p| p[1] }
+    cr_curve = generate_full_CR( 0.01, points, 1 )
+    
+    x_cr = cr_curve.map { |p| p[0] }
+    y_cr = cr_curve.map { |p| p[1] }
     
     x = points.map { |p| p[0] }
     y = points.map { |p| p[1] }
