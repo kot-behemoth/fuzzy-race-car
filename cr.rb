@@ -1,0 +1,81 @@
+# encoding: utf-8
+require 'gnuplot'
+require 'matrix'
+
+points = [ [-1, -1],
+           [ 0,  0],
+           [ 3,  4],
+           [-1,  2],
+           [ 0,  0],
+           [ 2, -1] ]
+
+def CR_matrix( τ )
+  τ = τ.to_f
+
+  Matrix[ [  0,   1,     0,  0],
+          [ -τ,   0,     τ,  0],
+          [2*τ, τ-3, 3-2*τ, -τ],
+          [ -τ, 2-τ,   τ-2,  τ] ]
+end
+
+def S( t, τ, control_points, start_point )
+  p = Matrix[ control_points[start_point - 2],
+              control_points[start_point - 1],
+              control_points[start_point],
+              control_points[start_point + 1] ]
+
+  c = ( CR_matrix(τ)*p ).row_vectors
+
+  # Compute the actual S(t) vector equation
+  c[0] + c[1]*t + c[2]*(t**2) + c[3]*(t**3)
+end
+
+Gnuplot.open do |gp|
+  Gnuplot::Plot.new( gp ) do |p|
+
+    p.mouse
+    p.view
+
+    #p.terminal "wxt size 350,262 enhanced font 'Verdana,10' persist"
+
+    #p.terminal "svg fname 'Helvetica Neue' fsize 10"
+    #p.output 'introduction.svg'
+
+    #p.terminal "epslatex size 3.5,2.62 standalone color colortext 10"
+    #p.output 'introduction.tex'
+
+    #p.terminal "pngcairo size 350,262 enhanced font 'Helvetica,10'"
+    #p.output 'introduction.png'
+  
+    #p.xrange "[-10:10]"
+    p.title  'Catmull-Rom Spline'
+    p.ylabel 'y'
+    p.xlabel 'x'
+    
+    # Generate the curve
+    cr = Array.new
+    (0..1).step(0.01) { |t| cr << S( t, 1, points, 2 ) }
+    (0..1).step(0.01) { |t| cr << S( t, 1, points, 3 ) }
+    (0..1).step(0.01) { |t| cr << S( t, 1, points, 4 ) }
+
+    x_cr = cr.map { |p| p[0] }
+    y_cr = cr.map { |p| p[1] }
+    
+    x = points.map { |p| p[0] }
+    y = points.map { |p| p[1] }
+
+    p.data = [
+      Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
+        ds.with = 'lines'
+    	  ds.linewidth = 2
+      },
+    
+      Gnuplot::DataSet.new( [x, y] ) { |ds|
+        ds.with = 'points'
+      }
+    ]
+
+  end
+
+end
+
