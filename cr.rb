@@ -62,24 +62,23 @@ Gnuplot.open do |gp|
     p.ylabel 'y'
     p.xlabel 'x'
 
+    # Single curve
     cr_curve = generate_full_CR( 0.01, points, 1 )
-    
     x_cr = cr_curve.map { |p| p[0] }
     y_cr = cr_curve.map { |p| p[1] }
-    
-    x = points.map { |p| p[0] }
-    y = points.map { |p| p[1] }
-
-    p.data = [
+    p.data <<
       Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
         ds.with = 'lines'
     	  ds.linewidth = 2
-      },
+      }
     
+    # Add control points
+    x = points.map { |p| p[0] }
+    y = points.map { |p| p[1] }
+    p.data <<
       Gnuplot::DataSet.new( [x, y] ) { |ds|
         ds.with = 'points'
       }
-    ]
 
   end
 
