@@ -61,29 +61,32 @@ Gnuplot.open do |gp|
     p.ylabel 'y'
     p.xlabel 'x'
 
+    #p.border 'linewidth 1.5'
+
     # Multiple curves
-    (0..2).step(0.1) do |τ|
-      cr_curve = generate_full_CR( 0.01, points, τ )
-      x_cr = cr_curve.map { |p| p[0] }
-      y_cr = cr_curve.map { |p| p[1] }
-      p.data <<
-        Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
-          ds.with = 'lines'
-          ds.linewidth = 2
-        }
-    end
+    #(0..2).step(0.1) do |τ|
+    #  cr_curve = generate_full_CR( 0.01, points, τ )
+    #  x_cr = cr_curve.map { |p| p[0] }
+    #  y_cr = cr_curve.map { |p| p[1] }
+    #  p.data <<
+    #    Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
+    #      ds.with = 'lines'
+    #      ds.linewidth = 2
+    #    }
+    #end
 
     # Single curve
-    #cr_curve = generate_full_CR( 0.01, points, 1 )
-    #x_cr = cr_curve.map { |p| p[0] }
-    #y_cr = cr_curve.map { |p| p[1] }
-    #p.data <<
-    #  Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
-    #    ds.with = 'lines'
-    #	  ds.linewidth = 2
-    #  }
+    cr_curve = generate_full_CR( 0.01, points, 1 )
+    x_cr = cr_curve.map { |p| p[0] }
+    y_cr = cr_curve.map { |p| p[1] }
+    p.data <<
+      Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
         ds.notitle
-    
+        ds.with = 'lines'
+    	  ds.linewidth = 2
+    	  ds.linecolor = "rgb '#ff00ff'"
+      }
+
     # Add control points
     x = points.map { |p| p[0] }
     y = points.map { |p| p[1] }
