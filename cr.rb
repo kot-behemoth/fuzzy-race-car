@@ -82,14 +82,14 @@ Gnuplot.open do |gp|
     #    ds.with = 'lines'
     #	  ds.linewidth = 2
     #  }
-        ds.title = 'notitle'
+        ds.notitle
     
     # Add control points
     x = points.map { |p| p[0] }
     y = points.map { |p| p[1] }
     p.data <<
       Gnuplot::DataSet.new( [x, y] ) { |ds|
-        ds.title = 'notitle'
+        ds.notitle
         ds.with = 'points'
       }
 
