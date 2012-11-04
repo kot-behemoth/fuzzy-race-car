@@ -61,6 +61,7 @@ Gnuplot.open do |gp|
     p.ylabel 'y'
     p.xlabel 'x'
 
+    # Multiple curves
     (0..2).step(0.1) do |τ|
       cr_curve = generate_full_CR( 0.01, points, τ )
       x_cr = cr_curve.map { |p| p[0] }
