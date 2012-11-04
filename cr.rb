@@ -28,7 +28,6 @@ def S( t, τ, control_points, start_point )
 end
 
 def generate_full_CR( step, points, τ )
-
   segments = Array.new
 
   # -3 is because we're starting from p_i-2 to p_i+1
@@ -62,15 +61,26 @@ Gnuplot.open do |gp|
     p.ylabel 'y'
     p.xlabel 'x'
 
+    (0..2).step(0.1) do |τ|
+      cr_curve = generate_full_CR( 0.01, points, τ )
+      x_cr = cr_curve.map { |p| p[0] }
+      y_cr = cr_curve.map { |p| p[1] }
+      p.data <<
+        Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
+          ds.with = 'lines'
+          ds.linewidth = 2
+        }
+    end
+
     # Single curve
-    cr_curve = generate_full_CR( 0.01, points, 1 )
-    x_cr = cr_curve.map { |p| p[0] }
-    y_cr = cr_curve.map { |p| p[1] }
-    p.data <<
-      Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
-        ds.with = 'lines'
-    	  ds.linewidth = 2
-      }
+    #cr_curve = generate_full_CR( 0.01, points, 1 )
+    #x_cr = cr_curve.map { |p| p[0] }
+    #y_cr = cr_curve.map { |p| p[1] }
+    #p.data <<
+    #  Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
+    #    ds.with = 'lines'
+    #	  ds.linewidth = 2
+    #  }
     
     # Add control points
     x = points.map { |p| p[0] }
