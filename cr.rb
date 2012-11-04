@@ -9,22 +9,19 @@ points = [ [-1, -1],
            [ 0,  0],
            [ 2, -1] ]
 
-def CR_matrix( τ )
-  τ = τ.to_f
-
-  Matrix[ [  0,   1,     0,  0],
-          [ -τ,   0,     τ,  0],
-          [2*τ, τ-3, 3-2*τ, -τ],
-          [ -τ, 2-τ,   τ-2,  τ] ]
-end
-
 def S( t, τ, control_points, start_point )
+  τ = τ.to_f
+  cr_matrix = Matrix[ [  0,   1,     0,  0],
+                      [ -τ,   0,     τ,  0],
+                      [2*τ, τ-3, 3-2*τ, -τ],
+                      [ -τ, 2-τ,   τ-2,  τ] ]
+
   p = Matrix[ control_points[start_point - 2],
               control_points[start_point - 1],
               control_points[start_point],
               control_points[start_point + 1] ]
 
-  c = ( CR_matrix(τ)*p ).row_vectors
+  c = ( cr_matrix*p ).row_vectors
 
   # Compute the actual S(t) vector equation
   c[0] + c[1]*t + c[2]*(t**2) + c[3]*(t**3)
