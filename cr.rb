@@ -74,10 +74,22 @@ Gnuplot.open do |gp|
           ds.notitle
           ds.with = 'lines'
           ds.linewidth = 2
-          colour = ColorMath::HSL.new(0, 0, τ/1.0).hex
+          colour = ColorMath::HSL.new(0, 0, (1-τ)/1.0).hex
           ds.linecolor = "rgb '#{colour}'"
         end
     end
+
+    (1..5).step(0.1) do |τ|
+      p.data <<
+        Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+          ds.notitle
+          ds.with = 'lines'
+          ds.linewidth = 2
+          colour = ColorMath::HSL.new(0, 0, τ/(5-1)).hex
+          ds.linecolor = "rgb '#{colour}'"
+        end
+    end
+
 
     # Single curve
     #p.data <<
