@@ -51,13 +51,16 @@ Gnuplot.open do |gp|
 
     #p.terminal "wxt size 350,262 enhanced font 'Verdana,10' persist"
 
-    #p.terminal "svg fname 'Helvetica Neue' fsize 10"
-    #p.output 'introduction.svg'
+    p.terminal "svg size 800,600 fname 'Helvetica Neue' fsize 10"
+    p.output 'introduction.svg'
 
     #p.terminal "epslatex size 3.5,2.62 standalone color colortext 10"
     #p.output 'introduction.tex'
 
-    #p.terminal "pngcairo size 350,262 enhanced font 'Helvetica,10'"
+    #p.terminal "postscript eps size 15,15 enhanced color font 'Helvetica,20' linewidth 2"
+    #p.output 'introduction.eps'
+
+    #p.terminal "pngcairo size 350,262 enhanced font 'Helvetica Neue,10'"
     #p.output 'introduction.png'
   
     #p.xrange "[-10:10]"
@@ -68,38 +71,58 @@ Gnuplot.open do |gp|
     #p.border 'linewidth 1.5'
 
     # Multiple curves
-    (0..1).step(0.1) do |τ|
-      p.data <<
-        Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
-          ds.notitle
-          ds.with = 'lines'
-          ds.linewidth = 2
-          colour = ColorMath::HSL.new(0, 0, (1-τ)/1.0).hex
-          ds.linecolor = "rgb '#{colour}'"
-        end
-    end
+    #(0..1).step(0.01) do |τ|
+    #  p.data <<
+    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #      ds.notitle
+    #      ds.with = 'lines'
+    #      ds.linewidth = 2
+    #      colour = ColorMath::HSL.new(0, 0, (1-τ+0.2)/1.0).hex
+    #      ds.linecolor = "rgb '#{colour}'"
+    #    end
+    #end
 
-    (1..5).step(0.1) do |τ|
-      p.data <<
-        Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
-          ds.notitle
-          ds.with = 'lines'
-          ds.linewidth = 2
-          colour = ColorMath::HSL.new(0, 0, τ/(5-1)).hex
-          ds.linecolor = "rgb '#{colour}'"
-        end
-    end
+    #(1..5).step(0.01) do |τ|
+    #  p.data <<
+    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #      ds.notitle
+    #      ds.with = 'lines'
+    #      ds.linewidth = 2
+    #      colour = ColorMath::HSL.new(0, 0, (τ-1)/(5-1)).hex
+    #      ds.linecolor = "rgb '#{colour}'"
+    #    end
+    #end
+
+    #(0..50).step(1) do |τ|
+    #  p.data <<
+    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #      ds.notitle
+    #      ds.with = 'lines'
+    #      ds.linewidth = 2
+    #      #colour = ColorMath::HSL.new(0, 0, (τ-1)/(5-1)).hex
+    #      #ds.linecolor = "rgb '#{colour}'"
+    #    end
+    #end
+
+    #(0..5).step(0.1) do |τ|
+    #  p.data <<
+    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #      ds.notitle
+    #      ds.with = 'lines'
+    #      ds.linewidth = 2
+    #    end
+    #end
 
 
     # Single curve
-    #p.data <<
-    #  Gnuplot::DataSet.new( generate_full_CR( 0.01, points, 1 ) ) do |ds|
-    #    ds.notitle
-    #    ds.with = 'lines'
-    #	  ds.linewidth = 2
-    #    colour = ColorMath::HSL.new(350, 1, 0.88).hex
-    #	  ds.linecolor = "rgb '#{colour}'"
-    #  end
+    p.data <<
+      Gnuplot::DataSet.new( generate_full_CR( 0.01, points, 1 ) ) do |ds|
+        ds.notitle
+        ds.with = 'lines'
+        ds.linewidth = 1
+        colour = ColorMath::HSL.new(337, 64, 0.56).hex
+        ds.linecolor = "rgb '#{colour}'"
+      end
 
     # Add control points
     x = points.map { |p| p[0] }
@@ -108,6 +131,7 @@ Gnuplot.open do |gp|
       Gnuplot::DataSet.new( [x, y] ) do |ds|
         ds.notitle
         ds.with = 'points'
+        ds.linecolor = "rgb '#000'"
       end
 
   end
