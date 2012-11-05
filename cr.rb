@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'gnuplot'
 require 'matrix'
+load 'lib/colour.rb'
 
 points = [ [-1, -1],
            [ 0,  0],
