@@ -40,7 +40,7 @@ def generate_full_CR( step, points, τ )
   segments
 end
 
-puts ColorMath::HSL.new(350, 1, 0.88).hex
+puts 
 
 Gnuplot.open do |gp|
   Gnuplot::Plot.new( gp ) do |p|
@@ -87,7 +87,7 @@ Gnuplot.open do |gp|
         ds.notitle
         ds.with = 'lines'
     	  ds.linewidth = 2
-    	  ds.linecolor = "rgb '#ff00ff'"
+    	  ds.linecolor = "rgb '#{ColorMath::HSL.new(350, 1, 0.88).hex}'"
       }
 
     # Add control points
