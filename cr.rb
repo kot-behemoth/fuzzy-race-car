@@ -68,23 +68,26 @@ Gnuplot.open do |gp|
     #p.border 'linewidth 1.5'
 
     # Multiple curves
-    (0..5).step(0.1) do |τ|
+    (0..1).step(0.1) do |τ|
       p.data <<
         Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+          ds.notitle
           ds.with = 'lines'
           ds.linewidth = 2
-         #ds.linecolor = "rgb '#{ColorMath::HSL.new(350, 1, 0.88).hex}'"
+          colour = ColorMath::HSL.new(0, 0, τ/1.0).hex
+          ds.linecolor = "rgb '#{colour}'"
         end
     end
 
     # Single curve
-    p.data <<
-      Gnuplot::DataSet.new( generate_full_CR( 0.01, points, 1 ) ) do |ds|
-        ds.notitle
-        ds.with = 'lines'
-    	  ds.linewidth = 2
-    	  ds.linecolor = "rgb '#{ColorMath::HSL.new(350, 1, 0.88).hex}'"
-      end
+    #p.data <<
+    #  Gnuplot::DataSet.new( generate_full_CR( 0.01, points, 1 ) ) do |ds|
+    #    ds.notitle
+    #    ds.with = 'lines'
+    #	  ds.linewidth = 2
+    #    colour = ColorMath::HSL.new(350, 1, 0.88).hex
+    #	  ds.linecolor = "rgb '#{colour}'"
+    #  end
 
     # Add control points
     x = points.map { |p| p[0] }
