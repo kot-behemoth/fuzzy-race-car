@@ -28,13 +28,13 @@ def S( t, τ, control_points, start_point )
   c[0] + c[1]*t + c[2]*(t**2) + c[3]*(t**3)
 end
 
-def generate_full_CR( step, points, τ )
+def CR_curve( t_step, points, τ )
   segments = Array.new
 
   # -3 is because we're starting from p_i-2 to p_i+1
   # so we are also starting from the point p_i+2
   (points.length-3).times do |i|
-    (0..1).step( step ) { |t| segments << S( t, τ, points, 2+i ) }
+    (0..1).step( t_step ) { |t| segments << S( t, τ, points, 2+i ) }
   end
 
   # Return the points as [xs, ys] - easy consumption for DataSet
@@ -51,8 +51,8 @@ Gnuplot.open do |gp|
 
     #p.terminal "wxt size 350,262 enhanced font 'Verdana,10' persist"
 
-    p.terminal "svg size 800,600 fname 'Helvetica Neue' fsize 10"
-    p.output 'introduction.svg'
+    #p.terminal "svg size 800,600 fname 'Helvetica Neue' fsize 10"
+    #p.output 'introduction.svg'
 
     #p.terminal "epslatex size 3.5,2.62 standalone color colortext 10"
     #p.output 'introduction.tex'
@@ -73,7 +73,7 @@ Gnuplot.open do |gp|
     # Multiple curves
     #(0..1).step(0.01) do |τ|
     #  p.data <<
-    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
     #      ds.notitle
     #      ds.with = 'lines'
     #      ds.linewidth = 2
@@ -84,7 +84,7 @@ Gnuplot.open do |gp|
 
     #(1..5).step(0.01) do |τ|
     #  p.data <<
-    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
     #      ds.notitle
     #      ds.with = 'lines'
     #      ds.linewidth = 2
@@ -95,7 +95,7 @@ Gnuplot.open do |gp|
 
     #(0..50).step(1) do |τ|
     #  p.data <<
-    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
     #      ds.notitle
     #      ds.with = 'lines'
     #      ds.linewidth = 2
@@ -106,7 +106,7 @@ Gnuplot.open do |gp|
 
     #(0..5).step(0.1) do |τ|
     #  p.data <<
-    #    Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+    #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
     #      ds.notitle
     #      ds.with = 'lines'
     #      ds.linewidth = 2
@@ -116,7 +116,7 @@ Gnuplot.open do |gp|
 
     # Single curve
     p.data <<
-      Gnuplot::DataSet.new( generate_full_CR( 0.01, points, 1 ) ) do |ds|
+      Gnuplot::DataSet.new( CR_curve( 0.01, points, 1 ) ) do |ds|
         ds.notitle
         ds.with = 'lines'
         ds.linewidth = 1
