@@ -37,7 +37,8 @@ def generate_full_CR( step, points, τ )
     (0..1).step( step ) { |t| segments << S( t, τ, points, 2+i ) }
   end
 
-  segments
+  # Return the points as [xs, ys] - easy consumption for DataSet
+  [segments.map{|p| p[0]}, segments.map{|p| p[1]}] 
 end
 
 puts 
@@ -67,28 +68,23 @@ Gnuplot.open do |gp|
     #p.border 'linewidth 1.5'
 
     # Multiple curves
-    #(0..2).step(0.1) do |τ|
-    #  cr_curve = generate_full_CR( 0.01, points, τ )
-    #  x_cr = cr_curve.map { |p| p[0] }
-    #  y_cr = cr_curve.map { |p| p[1] }
-    #  p.data <<
-    #    Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
-    #      ds.with = 'lines'
-    #      ds.linewidth = 2
-    #    }
-    #end
+    (0..5).step(0.1) do |τ|
+      p.data <<
+        Gnuplot::DataSet.new( generate_full_CR(0.01, points, τ) ) do |ds|
+          ds.with = 'lines'
+          ds.linewidth = 2
+         #ds.linecolor = "rgb '#{ColorMath::HSL.new(350, 1, 0.88).hex}'"
+        end
+    end
 
     # Single curve
-    cr_curve = generate_full_CR( 0.01, points, 1 )
-    x_cr = cr_curve.map { |p| p[0] }
-    y_cr = cr_curve.map { |p| p[1] }
     p.data <<
-      Gnuplot::DataSet.new( [x_cr, y_cr] ) { |ds|
+      Gnuplot::DataSet.new( generate_full_CR( 0.01, points, 1 ) ) do |ds|
         ds.notitle
         ds.with = 'lines'
     	  ds.linewidth = 2
     	  ds.linecolor = "rgb '#{ColorMath::HSL.new(350, 1, 0.88).hex}'"
-      }
+      end
 
     # Add control points
     x = points.map { |p| p[0] }
