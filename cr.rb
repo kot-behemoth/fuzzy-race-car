@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'gnuplot'
 require 'matrix'
-load 'lib/colour.rb'
+require 'colormath'
 
 points = [ [-1, -1],
            [ 0,  0],
@@ -39,6 +39,8 @@ def generate_full_CR( step, points, τ )
 
   segments
 end
+
+puts ColorMath::HSL.new(350, 1, 0.88).hex
 
 Gnuplot.open do |gp|
   Gnuplot::Plot.new( gp ) do |p|
