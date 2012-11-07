@@ -41,7 +41,6 @@ def CR_curve( t_step, points, τ )
   [segments.map{|p| p[0]}, segments.map{|p| p[1]}] 
 end
 
-puts 
 
 Gnuplot.open do |gp|
   Gnuplot::Plot.new( gp ) do |p|
