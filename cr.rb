@@ -48,25 +48,19 @@ Gnuplot.open do |gp|
     p.mouse
     p.view
 
-    #p.terminal "wxt size 350,262 enhanced font 'Verdana,10' persist"
-
     #p.terminal "svg size 800,600 fname 'Helvetica Neue' fsize 10"
     #p.output 'introduction.svg'
 
     #p.terminal "epslatex size 3.5,2.62 standalone color colortext 10"
     #p.output 'introduction.tex'
 
-    #p.terminal "postscript eps size 15,15 enhanced color font 'Helvetica,20' linewidth 2"
-    #p.output 'introduction.eps'
-
     #p.terminal "pngcairo size 350,262 enhanced font 'Helvetica Neue,10'"
     #p.output 'introduction.png'
   
     #p.xrange "[-10:10]"
     p.title  'Catmull-Rom Spline'
-    p.ylabel 'y'
     p.xlabel 'x'
-
+    p.ylabel 'y'
     #p.border 'linewidth 1.5'
 
     # Multiple curves
