@@ -61,6 +61,7 @@ Gnuplot.open do |gp|
     p.xlabel 'x'
     p.ylabel 'y'
     #p.border 'linewidth 1.5'
+    
 
     #################
     # Multiple curves
@@ -135,6 +136,5 @@ Gnuplot.open do |gp|
       end
 
   end
-
 end
 
