@@ -48,13 +48,13 @@ Gnuplot.open do |gp|
     p.view
 
     #p.terminal "svg size 800,600 fname 'Helvetica Neue' fsize 10"
-    #p.output 'introduction.svg'
+    #p.output 'cr_plot.svg'
 
     #p.terminal "epslatex size 3.5,2.62 standalone color colortext 10"
-    #p.output 'introduction.tex'
+    #p.output 'cr_plot.tex'
 
     #p.terminal "pngcairo size 350,262 enhanced font 'Helvetica Neue,10'"
-    #p.output 'introduction.png'
+    #p.output 'cr_plot.png'
   
     #p.xrange "[-10:10]"
     p.title  'Catmull-Rom Spline'
