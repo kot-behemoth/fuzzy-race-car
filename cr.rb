@@ -44,7 +44,6 @@ end
 
 Gnuplot.open do |gp|
   Gnuplot::Plot.new( gp ) do |p|
-
     p.mouse
     p.view
 
@@ -63,7 +62,12 @@ Gnuplot.open do |gp|
     p.ylabel 'y'
     #p.border 'linewidth 1.5'
 
+    #################
     # Multiple curves
+    #################
+   
+    # This is a double plot, gives a black and white gradient plot
+    # with each curve's blackness depending on how close to 1 τ is.
     #(0..1).step(0.01) do |τ|
     #  p.data <<
     #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
@@ -74,7 +78,6 @@ Gnuplot.open do |gp|
     #      ds.linecolor = "rgb '#{colour}'"
     #    end
     #end
-
     #(1..5).step(0.01) do |τ|
     #  p.data <<
     #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
@@ -86,17 +89,17 @@ Gnuplot.open do |gp|
     #    end
     #end
 
+    # Just a crazy plot with normal GNUplot-provided colours
     #(0..50).step(1) do |τ|
     #  p.data <<
     #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
     #      ds.notitle
     #      ds.with = 'lines'
     #      ds.linewidth = 2
-    #      #colour = ColorMath::HSL.new(0, 0, (τ-1)/(5-1)).hex
-    #      #ds.linecolor = "rgb '#{colour}'"
     #    end
     #end
 
+    # Another funky plot, similar to the previous one, but τ only goes up to 5
     #(0..5).step(0.1) do |τ|
     #  p.data <<
     #    Gnuplot::DataSet.new( CR_curve(0.01, points, τ) ) do |ds|
@@ -107,7 +110,9 @@ Gnuplot.open do |gp|
     #end
 
 
+    ##############
     # Single curve
+    ##############
     p.data <<
       Gnuplot::DataSet.new( CR_curve( 0.01, points, 1 ) ) do |ds|
         ds.notitle
@@ -117,7 +122,9 @@ Gnuplot.open do |gp|
         ds.linecolor = "rgb '#{colour}'"
       end
 
-    # Add control points
+    ################
+    # Control points
+    ################
     x = points.map { |p| p[0] }
     y = points.map { |p| p[1] }
     p.data <<
