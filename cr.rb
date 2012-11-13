@@ -66,6 +66,18 @@ Gnuplot.open do |gp|
     #p.border 'linewidth 1.5'
     
 
+    ##############
+    # Single curve
+    ##############
+    p.data <<
+      Gnuplot::DataSet.new( CR_curve( 0.01, points, 1 ) ) do |ds|
+        ds.notitle
+        ds.with = 'lines'
+        ds.linewidth = 1
+        colour = ColorMath::HSL.new(337, 64, 0.56).hex
+        ds.linecolor = "rgb '#{colour}'"
+      end
+
     #################
     # Multiple curves
     #################
@@ -113,18 +125,6 @@ Gnuplot.open do |gp|
     #    end
     #end
 
-
-    ##############
-    # Single curve
-    ##############
-    p.data <<
-      Gnuplot::DataSet.new( CR_curve( 0.01, points, 1 ) ) do |ds|
-        ds.notitle
-        ds.with = 'lines'
-        ds.linewidth = 1
-        colour = ColorMath::HSL.new(337, 64, 0.56).hex
-        ds.linecolor = "rgb '#{colour}'"
-      end
 
     ################
     # Control points
