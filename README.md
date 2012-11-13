@@ -3,7 +3,7 @@
 A simple GNUplot-based CR splines plotter. Comes with a few samples packaged —
 just uncomment various plots. To run, execute `ruby cr.rb`.
 
-__Note:__ I'm using my own fork of the [ruby_gnuplot][ruby_gnuplot] gem that
+__Note:__ I'm using my own fork of the [ruby_gnuplot][gnuplot] gem that
 allows the `linecolor` to be specified, so use that for now. I'll make a pull
 request to master quite soon.
 
@@ -17,4 +17,5 @@ on any other systems.
 To install all the gems, simply run `bundle install`.
 
 [post]: http://gregory.goltsov.info/blog/fun-with-catmull-rom-splines-using-gnuplot-and-ruby
+[gnuplot]: https://github.com/rdp/ruby_gnuplot
 
