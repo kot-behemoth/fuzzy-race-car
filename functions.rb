@@ -9,13 +9,12 @@ class MembershipFunction
 end
 
 class Triangle < MembershipFunction
-  attr_accessor :lmin, :max, :rmin, :plot_step
+  attr_accessor :lmin, :max, :rmin
 
   def initialize(lmin, max, rmin)
     @lmin = lmin
     @max = max
     @rmin = rmin
-    @plot_step = 0.1
   end
 
   def evaluate(x)
@@ -37,7 +36,7 @@ class Triangle < MembershipFunction
     xs = Array.new
     ys = Array.new
     mf_range = @lmin..@rmin
-    mf_range.step(@plot_step) do |x|
+    mf_range.step(PLOT_STEP) do |x|
       xs << x
       ys << evaluate(x)
     end
