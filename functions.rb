@@ -32,17 +32,18 @@ class TriangleMF
       when @lmin...@max
         (x-@lmin) / (@max-@lmin)
       when @max...@rmin
-        1 - (x-@max)/(@rmin-@max)
-      when x >= @rmin
+        1 - (x-@max) / (@rmin-@max)
+      else #when x >= @rmin
         0
-      else
-        error "Wrong range!"
+      #else
+        #raise "Wrong range in evaluate for x value #{x}"
     end
   end
 
   def get_dataset
-    xs, ys = Array.new
-    mf_range = @lmin...@rmin
+    xs = Array.new
+    ys = Array.new
+    mf_range = @lmin..@rmin
     mf_range.step(@plot_step) do |x|
       xs << x
       ys << evaluate(x)

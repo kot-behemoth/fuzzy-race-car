@@ -6,7 +6,7 @@ class Variable
   attr_accessor :fuzzy_sets, :name
 
   def initialize(name)
-    fuzzy_sets = Hash.new
+    @fuzzy_sets = Hash.new
   end
 
   def plot_sets()
@@ -20,7 +20,7 @@ class Variable
         p.xlabel 'x'
         p.ylabel 'y'
 
-        fuzzy_sets.values.each do |fuzzy_set|
+        @fuzzy_sets.values.each do |fuzzy_set|
           p.data << fuzzy_set.get_dataset
         end
       end
