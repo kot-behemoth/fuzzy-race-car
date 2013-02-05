@@ -1,9 +1,51 @@
 class MembershipFunction
+  PLOT_STEP = 0.1
 
   def evaluate(x)
   end
  
   def get_dataset
+  end
+
+end
+
+class Trapezoid < MembershipFunction
+  attr_accessor :lmin, :lmax, :rmax, :rmin
+
+  def initialize(lmin, lmax, rmax, rmin)
+    @lmin = lmin
+    @lmax = lmax
+    @rmax = rmax
+    @rmin = rmin
+  end
+
+  def evaluate(x)
+    case x
+      when @lmin...@lmax
+        (x-@lmin) / (@lmax-@lmin)
+      when @lmax...@rmax
+        1
+      when @rmax..@rmin
+        1 - (x-@rmax) / (@rmin-@rmax)
+      else
+        0
+    end
+  end
+ 
+  def get_dataset
+    xs = Array.new
+    ys = Array.new
+    mf_range = @lmin..@rmin
+    mf_range.step(PLOT_STEP) do |x|
+      xs << x
+      ys << evaluate(x)
+    end
+
+    Gnuplot::DataSet.new( [xs, ys] ) do |ds|
+      ds.notitle
+      ds.with = 'filledcurve'
+      ds.linewidth = 1
+    end
   end
 
 end
@@ -19,16 +61,12 @@ class Triangle < MembershipFunction
 
   def evaluate(x)
     case x
-      when x < @lmin
-        return 0
       when @lmin...@max
         (x-@lmin) / (@max-@lmin)
-      when @max...@rmin
+      when @max..@rmin
         1 - (x-@max) / (@rmin-@max)
-      else #when x >= @rmin
+      else
         0
-      #else
-        #raise "Wrong range in evaluate for x value #{x}"
     end
   end
 
@@ -45,8 +83,6 @@ class Triangle < MembershipFunction
       ds.notitle
       ds.with = 'filledcurve'
       ds.linewidth = 1
-      # colour = ColorMath::HSL.new(337, 64, 0.56).hex
-      # ds.linecolor = "rgb '#{colour}'"
     end
   end
 

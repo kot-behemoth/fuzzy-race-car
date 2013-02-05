@@ -4,7 +4,7 @@ require_relative 'variable'
 tip = Variable.new('tip')
 
 cheap_fset = Triangle.new(0, 1, 2)
-average_fset = Triangle.new(2, 3, 4)
+average_fset = Trapezoid.new(2, 2.5, 3.5, 4)
 generous_fset = Triangle.new(4, 5, 6)
 
 tip.fuzzy_sets[:cheap] = cheap_fset
