@@ -1,14 +1,19 @@
 #!/usr/bin/env ruby
 require_relative 'variable'
 
+# Fuzzification
+
 tip = Variable.new('tip')
 
-cheap_fset = Triangle.new(0, 1, 2)
-average_fset = Trapezoid.new(2, 2.5, 3.5, 4)
-generous_fset = Triangle.new(4, 5, 6)
+tip.fuzzy_sets[:cheap] = Triangle.new(0, 1, 2)
+tip.fuzzy_sets[:average] = Trapezoid.new(2, 2.5, 3.5, 4)
+tip.fuzzy_sets[:generous] = Triangle.new(4, 5, 6)
 
-tip.fuzzy_sets[:cheap] = cheap_fset
-tip.fuzzy_sets[:average] = average_fset
-tip.fuzzy_sets[:generous] = generous_fset
+service = Variable.new('service')
 
-tip.plot_sets
+service.fuzzy_sets[:poor] = Triangle.new(0, 0, 4)
+service.fuzzy_sets[:good] = Trapezoid.new(1, 4, 6, 9)
+service.fuzzy_sets[:excellent] = Triangle.new(6, 9, 9)
+
+#tip.plot_sets
+service.plot_sets

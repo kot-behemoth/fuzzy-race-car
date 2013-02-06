@@ -9,6 +9,19 @@ class MembershipFunction
 
 end
 
+def lerp(min, max, t)
+  #raise 'Range error - min >= max' if min >= max
+  raise 'Range error - t is not in [0, 1]' if t < 0 or t > 1
+
+  min + t*(max - min).to_f
+end
+
+def normalise(min, max, x)
+  raise 'Range error - min >= max' if min >= max
+
+  (x-min) / (max-min).to_f
+end
+
 class Trapezoid < MembershipFunction
   attr_accessor :lmin, :lmax, :rmax, :rmin
 
@@ -17,6 +30,7 @@ class Trapezoid < MembershipFunction
     @lmax = lmax
     @rmax = rmax
     @rmin = rmin
+    raise 'Wrongly defined bounds!' if @lmin > @lmax or @lmax > @rmax or @rmax > @rmin
   end
 
   def evaluate(x)
@@ -57,16 +71,37 @@ class Triangle < MembershipFunction
     @lmin = lmin
     @max = max
     @rmin = rmin
+    raise 'Wrongly defined bounds!' if @lmin > @max or @max > @rmin
   end
 
   def evaluate(x)
-    case x
-      when @lmin...@max
-        (x-@lmin) / (@max-@lmin)
-      when @max..@rmin
-        1 - (x-@max) / (@rmin-@max)
-      else
-        0
+    if @lmin == @max
+      case x
+        when @lmin
+          1
+        when @lmin..@rmin
+          lerp(1, 0, normalise(@lmin, @rmin, x))
+        else
+          0
+      end
+
+    elsif @max == @rmin
+      case x
+        when @lmin..@rmin
+          lerp(0, 1, normalise(@lmin, @rmin, x))
+        else
+          0
+      end
+
+    else
+      case x
+        when @lmin...@max
+          lerp(0, 1, normalise(@lmin, @max, x))
+        when @max..@rmin
+          lerp(1, 0, normalise(@max, @rmin, x))
+        else
+          0
+      end
     end
   end
 
@@ -87,3 +122,4 @@ class Triangle < MembershipFunction
   end
 
 end
+
