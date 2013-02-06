@@ -109,10 +109,15 @@ class Triangle < MembershipFunction
     xs = Array.new
     ys = Array.new
     mf_range = @lmin..@rmin
+
+    if @lmin == @max then xs << mf_range.first; ys << 0 end
+
     mf_range.step(PLOT_STEP) do |x|
       xs << x
       ys << evaluate(x)
     end
+
+    if @max == @rmin then xs << mf_range.last; ys << 0 end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
       ds.notitle
