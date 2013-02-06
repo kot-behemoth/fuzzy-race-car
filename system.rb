@@ -8,6 +8,7 @@ service = Variable.new('service')
 service.fuzzy_sets[:poor] = Triangle.new(0, 0, 4)
 service.fuzzy_sets[:good] = Trapezoid.new(1, 4, 6, 9)
 service.fuzzy_sets[:excellent] = Triangle.new(6, 9, 9)
+service.fuzzy_sets[:excellent].max_y = 0.5
 
 tip = Variable.new('tip')
 

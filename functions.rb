@@ -54,18 +54,21 @@ class Trapezoid < MembershipFunction
 end
 
 class Triangle < MembershipFunction
-  attr_accessor :lmin, :max, :rmin
+  attr_accessor :lmin, :max, :rmin, :max_y
 
   def initialize(lmin, max, rmin)
     @lmin = lmin
     @max = max
     @rmin = rmin
+    @max_y = 1
     raise 'Wrongly defined bounds!' if @lmin > @max or @max > @rmin
   end
 
   def evaluate(x)
+    f = 0
+
     if @lmin == @max
-      case x
+      f = case x
         when @lmin
           1
         when @lmin..@rmin
@@ -75,7 +78,7 @@ class Triangle < MembershipFunction
       end
 
     elsif @max == @rmin
-      case x
+      f = case x
         when @lmin..@rmin
           lerp(0, 1, normalise(@lmin, @rmin, x))
         else
@@ -83,7 +86,7 @@ class Triangle < MembershipFunction
       end
 
     else
-      case x
+      f = case x
         when @lmin...@max
           lerp(0, 1, normalise(@lmin, @max, x))
         when @max..@rmin
@@ -92,6 +95,10 @@ class Triangle < MembershipFunction
           0
       end
     end
+
+    # clamp tha value
+    if f > @max_y then f = @max_y end
+    f
   end
 
   def get_dataset
