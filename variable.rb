@@ -7,6 +7,7 @@ class Variable
 
   def initialize(name)
     @fuzzy_sets = Hash.new
+    @name = name
   end
 
   def plot_sets()
