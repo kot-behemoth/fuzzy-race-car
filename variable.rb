@@ -3,11 +3,12 @@ require 'gnuplot'
 require_relative 'functions'
 
 class Variable
-  attr_accessor :fuzzy_sets, :name
+  attr_accessor :fuzzy_sets, :name, :crisp_input
 
   def initialize(name)
     @fuzzy_sets = Hash.new
     @name = name
+    @crisp_value = 0
   end
 
   def plot_sets()

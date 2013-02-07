@@ -12,18 +12,22 @@ class MembershipFunction
 end
 
 class Trapezoid < MembershipFunction
-  attr_accessor :lmin, :lmax, :rmax, :rmin
+  attr_accessor :max_y
+  attr_reader :lmin, :lmax, :rmax, :rmin, :name
 
-  def initialize(lmin, lmax, rmax, rmin)
+  def initialize(name, lmin, lmax, rmax, rmin)
+    raise 'Wrongly defined bounds!' if lmin > lmax or lmax > rmax or rmax > rmin
+
     @lmin = lmin
     @lmax = lmax
     @rmax = rmax
     @rmin = rmin
-    raise 'Wrongly defined bounds!' if @lmin > @lmax or @lmax > @rmax or @rmax > @rmin
+    @name = name
+    @max_y = 1
   end
 
   def evaluate(x)
-    case x
+    f = case x
       when @lmin...@lmax
         (x-@lmin) / (@lmax-@lmin)
       when @lmax...@rmax
@@ -33,6 +37,10 @@ class Trapezoid < MembershipFunction
       else
         0
     end
+
+    # clamp the output
+    if f > @max_y then f = @max_y end
+    f
   end
  
   def get_dataset
@@ -45,7 +53,7 @@ class Trapezoid < MembershipFunction
     end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
-      ds.notitle
+      ds.title = @title
       ds.with = 'filledcurve'
       ds.linewidth = 1
     end
@@ -54,14 +62,17 @@ class Trapezoid < MembershipFunction
 end
 
 class Triangle < MembershipFunction
-  attr_accessor :lmin, :max, :rmin, :max_y
+  attr_accessor :max_y
+  attr_reader :lmin, :max, :rmin, :max_y, :name
 
-  def initialize(lmin, max, rmin)
+  def initialize(name, lmin, max, rmin)
+    raise 'Wrongly defined bounds!' if lmin > max or max > rmin
+
     @lmin = lmin
     @max = max
     @rmin = rmin
+    @name = name
     @max_y = 1
-    raise 'Wrongly defined bounds!' if @lmin > @max or @max > @rmin
   end
 
   def evaluate(x)
@@ -96,7 +107,7 @@ class Triangle < MembershipFunction
       end
     end
 
-    # clamp tha value
+    # clamp the output
     if f > @max_y then f = @max_y end
     f
   end
@@ -116,7 +127,7 @@ class Triangle < MembershipFunction
     if @max == @rmin then xs << mf_range.last; ys << 0 end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
-      ds.notitle
+      ds.title = @title
       ds.with = 'filledcurve'
       ds.linewidth = 1
     end
