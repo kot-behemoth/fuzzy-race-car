@@ -13,7 +13,7 @@ class Rule
 
   def evaluate
     @then_var.fuzzy_sets[@then_mf].max_y = \
-      @if_var.fuzzy_sets[@if_mf].evaluate( @if_var.crisp_value )
+      @if_var.fuzzy_sets[@if_mf].evaluate( @if_var.crisp_input )
   end
 
 end

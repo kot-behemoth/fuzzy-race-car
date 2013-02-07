@@ -53,7 +53,7 @@ class Trapezoid < MembershipFunction
     end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
-      ds.title = @title
+      ds.title = @name
       ds.with = 'filledcurve'
       ds.linewidth = 1
     end
@@ -127,7 +127,7 @@ class Triangle < MembershipFunction
     if @max == @rmin then xs << mf_range.last; ys << 0 end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
-      ds.title = @title
+      ds.title = @name
       ds.with = 'filledcurve'
       ds.linewidth = 1
     end

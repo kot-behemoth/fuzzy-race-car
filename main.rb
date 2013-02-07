@@ -34,6 +34,6 @@ engine.rules << rule_poor_service_cheap_tip
 engine.rules << rule_good_service_average_tip
 engine.rules << rule_excellent_service_generous_tip
 
-service.crisp_input = 0.3
-#engine.infer
-#tip.plot_sets
+service.crisp_input = 1
+engine.infer
+tip.plot_sets

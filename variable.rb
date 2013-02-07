@@ -13,17 +13,17 @@ class Variable
 
   def plot_sets()
     Gnuplot.open do |gp|
-      Gnuplot::Plot.new( gp ) do |p|
-        p.mouse
-        p.view
+      Gnuplot::Plot.new( gp ) do |plot|
+        plot.mouse
+        plot.view
 
-        #p.xrange "[-10:10]"
-        p.title  name
-        p.xlabel 'x'
-        p.ylabel 'y'
+        plot.yrange '[0:1]'
+        plot.title  name
+        plot.xlabel 'x'
+        plot.ylabel 'y'
 
         @fuzzy_sets.values.each do |fuzzy_set|
-          p.data << fuzzy_set.get_dataset
+          plot.data << fuzzy_set.get_dataset
         end
       end
     end
