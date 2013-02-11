@@ -13,7 +13,7 @@ end
 
 class Trapezoid < MembershipFunction
   attr_accessor :max_y
-  attr_reader :lmin, :lmax, :rmax, :rmin, :name
+  attr_reader :lmin, :lmax, :rmax, :rmin, :range, :name
 
   def initialize(name, lmin, lmax, rmax, rmin)
     raise 'Wrongly defined bounds!' if lmin > lmax or lmax > rmax or rmax > rmin
@@ -23,6 +23,7 @@ class Trapezoid < MembershipFunction
     @rmax = rmax
     @rmin = rmin
     @name = name
+    @range = lmin..rmin
     @max_y = 1
   end
 
@@ -53,7 +54,7 @@ class Trapezoid < MembershipFunction
     end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
-      ds.title = @name
+      ds.title = @name.to_s
       ds.with = 'filledcurve'
       ds.linewidth = 1
     end
@@ -63,7 +64,7 @@ end
 
 class Triangle < MembershipFunction
   attr_accessor :max_y
-  attr_reader :lmin, :max, :rmin, :max_y, :name
+  attr_reader :lmin, :max, :rmin, :max_y, :range, :name
 
   def initialize(name, lmin, max, rmin)
     raise 'Wrongly defined bounds!' if lmin > max or max > rmin
@@ -72,6 +73,7 @@ class Triangle < MembershipFunction
     @max = max
     @rmin = rmin
     @name = name
+    @range = lmin..rmin
     @max_y = 1
   end
 
@@ -127,7 +129,7 @@ class Triangle < MembershipFunction
     if @max == @rmin then xs << mf_range.last; ys << 0 end
 
     Gnuplot::DataSet.new( [xs, ys] ) do |ds|
-      ds.title = @name
+      ds.title = @name.to_s
       ds.with = 'filledcurve'
       ds.linewidth = 1
     end

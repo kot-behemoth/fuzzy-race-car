@@ -8,15 +8,15 @@ engine = InferenceEngine.new
 
 service = Variable.new('service')
 
-service.membership_functions[:poor] = Triangle.new('poor', 0, 0, 4)
-service.membership_functions[:good] = Trapezoid.new('good', 1, 4, 6, 9)
-service.membership_functions[:excellent] = Triangle.new('excellent', 6, 9, 9)
+service.add_mf Triangle.new(:poor, 0, 0, 4)
+service.add_mf Trapezoid.new(:good, 1, 4, 6, 9)
+service.add_mf Triangle.new(:excellent, 6, 9, 9)
 
 tip = Variable.new('tip')
 
-tip.membership_functions[:cheap] = Triangle.new('cheap', 0, 1, 2)
-tip.membership_functions[:average] = Trapezoid.new('average', 1, 2.5, 3.5, 5)
-tip.membership_functions[:generous] = Triangle.new('generous', 4, 5, 6)
+tip.add_mf Triangle.new(:cheap, 0, 1, 2)
+tip.add_mf Trapezoid.new(:average, 1, 2.5, 3.5, 5)
+tip.add_mf Triangle.new(:generous, 4, 5, 6)
 
 engine.variables[:service] = service
 engine.variables[:tip] = tip
@@ -37,3 +37,4 @@ engine.rules << rule_excellent_service_generous_tip
 service.crisp_input = 1.5
 engine.infer
 tip.plot_sets
+puts tip.range
