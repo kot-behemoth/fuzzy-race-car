@@ -26,13 +26,10 @@ tip.plot_sets
 
 # Rules
 
-rule_poor_service_cheap_tip = Rule.new(:poor, service, :cheap, tip)
-rule_good_service_average_tip = Rule.new(:good, service, :average, tip)
-rule_excellent_service_generous_tip = Rule.new(:excellent, service, :generous, tip)
+engine.rules << Rule.new.IF(:poor, service).THEN(:cheap, tip)
+engine.rules << Rule.new.IF(:good, service).THEN(:average, tip)
+engine.rules << Rule.new.IF(:excellent, service).THEN(:generous, tip)
 
-engine.rules << rule_poor_service_cheap_tip
-engine.rules << rule_good_service_average_tip
-engine.rules << rule_excellent_service_generous_tip
 
 service.crisp_input = 1.5
 engine.infer
