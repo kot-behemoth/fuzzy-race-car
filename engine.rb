@@ -11,7 +11,7 @@ class InferenceEngine
 
   def infer
     rules.each do |rule|
-      rule.evaluate
+      rule.evaluate!
     end
   end
 

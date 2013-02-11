@@ -28,7 +28,7 @@ class Rule
     self
   end
 
-  def evaluate
+  def evaluate!
     @then_var.membership_functions[@then_mf].max_y = \
       @if_var.membership_functions[@if_mf].evaluate( @if_var.crisp_input )
   end
