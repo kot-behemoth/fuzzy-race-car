@@ -36,5 +36,4 @@ engine.rules << rule_excellent_service_generous_tip
 
 service.crisp_input = 1.5
 engine.infer
-tip.plot_sets
-puts tip.range
+tip.plot_sets false, true

@@ -131,8 +131,7 @@ Gnuplot.open do |gp|
     ################
     x = points.map { |p| p[0] }
     y = points.map { |p| p[1] }
-    p.data <<
-      Gnuplot::DataSet.new( [x, y] ) do |ds|
+    p.data << Gnuplot::DataSet.new( [x, y] ) do |ds|
         ds.notitle
         ds.with = 'points'
         ds.linecolor = "rgb '#000'"

@@ -25,7 +25,36 @@ class Variable
 
   end
 
-  def plot_sets(plot_to_file=false)
+  def crisp_output
+    moment = 0.0
+    area = 0.0
+
+    @range.step(MembershipFunction::PLOT_STEP) do |x|
+      max_mf_value = get_max_mf_value(x)
+      area += max_mf_value
+      moment += x * max_mf_value
+
+      #puts x.to_s + ' ' + get_max_mf_value(x).to_s
+    end
+
+    raise 'Error in COG calculations!' if moment <= 0 or area <= 0
+
+    #puts "MOMENT: #{moment} AREA: #{area}"
+    #puts "MOMENT/AREA: #{moment/area}"
+    moment / area
+  end
+
+  def get_max_mf_value(x)
+    max = 0
+
+    @membership_functions.values.each do |mf|
+      max = mf.evaluate(x) if mf.evaluate(x) > max
+    end
+
+    max
+  end
+
+  def plot_sets(plot_to_file=false, plot_cog=false)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
         plot.mouse
@@ -43,6 +72,14 @@ class Variable
 
         @membership_functions.values.each do |mf|
           plot.data << mf.get_dataset
+        end
+
+        if(plot_cog)
+          plot.data << Gnuplot::DataSet.new( [[crisp_output], [0.5]] ) do |ds|
+              ds.title = 'crisp output (x-only)'
+              ds.with = 'points'
+              ds.linecolor = "rgb '#000'"
+          end
         end
       end
     end
