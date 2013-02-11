@@ -41,8 +41,8 @@ class Variable
           plot.output "#{@name}.png"
         end
 
-        @membership_functions.values.each do |fuzzy_set|
-          plot.data << fuzzy_set.get_dataset
+        @membership_functions.values.each do |mf|
+          plot.data << mf.get_dataset
         end
       end
     end
