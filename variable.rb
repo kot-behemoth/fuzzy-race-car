@@ -3,10 +3,10 @@ require 'gnuplot'
 require_relative 'functions'
 
 class Variable
-  attr_accessor :fuzzy_sets, :name, :crisp_input
+  attr_accessor :membership_functions, :name, :crisp_input
 
   def initialize(name)
-    @fuzzy_sets = Hash.new
+    @membership_functions = Hash.new
     @name = name
     @crisp_value = 0
   end
@@ -27,7 +27,7 @@ class Variable
           plot.output "#{@name}.png"
         end
 
-        @fuzzy_sets.values.each do |fuzzy_set|
+        @membership_functions.values.each do |fuzzy_set|
           plot.data << fuzzy_set.get_dataset
         end
       end
