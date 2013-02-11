@@ -1,7 +1,7 @@
 require_relative 'utils'
 
 class MembershipFunction
-  PLOT_STEP = 0.1
+  PLOT_STEP = 0.01
 
   def evaluate(x)
   end
