@@ -79,14 +79,6 @@ class Variable
           plot.data << mf.get_dataset
         end
 
-
-        #if(plot_cog)
-        #  plot.data << Gnuplot::DataSet.new( [[crisp_output], [0.5]] ) do |ds|
-        #      ds.title = 'crisp output (x-only)'
-        #      ds.with = 'points'
-        #      ds.linecolor = "rgb '#000'"
-        #  end
-        #end
       end
     end
 
