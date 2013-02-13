@@ -64,6 +64,7 @@ class Variable
         plot.title @name
         plot.xlabel 'x'
         plot.ylabel 'y'
+        plot.arbitrary_lines << 'set key outside'
 
         if(plot_to_file)
           plot.terminal "png size 800,600 font 'Helvetica Neue, 11'"
