@@ -19,7 +19,7 @@ class Rule
   end
 
   def evaluate!
-    @then_var.membership_functions[@then_mf].max_y = \
+    @then_var.membership_functions[@then_mf].weight = \
       @if_var.membership_functions[@if_mf].evaluate( @if_var.crisp_input )
   end
 

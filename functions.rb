@@ -14,7 +14,7 @@ class MembershipFunction
 end
 
 class Trapezoid < MembershipFunction
-  attr_accessor :max_y
+  attr_accessor :weight
   attr_reader :lmin, :lmax, :rmax, :rmin, :range, :name
 
   def initialize(name, lmin, lmax, rmax, rmin)
@@ -26,7 +26,7 @@ class Trapezoid < MembershipFunction
     @rmin = rmin
     @name = name
     @range = lmin..rmin
-    @max_y = 1
+    @weight = 1
   end
 
   def evaluate(x)
@@ -41,9 +41,7 @@ class Trapezoid < MembershipFunction
         0
     end
 
-    # clamp the output
-    if f > @max_y then f = @max_y end
-    f
+    f * weight
   end
  
   def get_dataset
@@ -65,8 +63,8 @@ class Trapezoid < MembershipFunction
 end
 
 class Triangle < MembershipFunction
-  attr_accessor :max_y
-  attr_reader :lmin, :max, :rmin, :max_y, :range, :name
+  attr_accessor :weight
+  attr_reader :lmin, :max, :rmin, :range, :name
 
   def initialize(name, lmin, max, rmin)
     raise 'Wrongly defined bounds!' if lmin > max or max > rmin
@@ -76,7 +74,7 @@ class Triangle < MembershipFunction
     @rmin = rmin
     @name = name
     @range = lmin..rmin
-    @max_y = 1
+    @weight = 1
   end
 
   def evaluate(x)
@@ -111,9 +109,7 @@ class Triangle < MembershipFunction
       end
     end
 
-    # clamp the output
-    if f > @max_y then f = @max_y end
-    f
+    f * weight
   end
 
   def get_dataset
