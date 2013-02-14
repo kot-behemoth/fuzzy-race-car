@@ -27,7 +27,7 @@ class Game < Chingu::Window
 
 	def update
 		super
-		self.caption = 'Fuzzy inference system racing car'
+		self.caption = "Fuzzy inference system racing car, FPS: #{$window.fps}"
 	end
 end
 
@@ -84,9 +84,9 @@ class Player < Chingu::GameObject
 		# distance.plot_sets( { :plot_input => true } )
 		@engine.infer
 		# steering.plot_sets( { :plot_output => true } )
-		puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
+		# puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
 
-		@angle = steering.crisp_output*5.0
+		@angle = steering.crisp_output*10.0
 		@velocity_x = Gosu.offset_x(@angle, @speed)
 		super
 	end
@@ -110,7 +110,7 @@ class Player < Chingu::GameObject
 
 		# Fuzzification
 
-		d = 320.0
+		d = $window.height/2.0
 
 		distance = Variable.create 'distance' do
 			membership_function Triangle.new(:left, -d, -d, 0)
