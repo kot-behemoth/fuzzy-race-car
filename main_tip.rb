@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-require_relative 'engine'
-require_relative 'variable'
+require './engine'
+require './variable'
 
 engine = InferenceEngine.new
 
@@ -21,7 +21,8 @@ tip.add_mf Triangle.new(:generous, 4, 5, 6)
 engine.variables[:service] = service
 engine.variables[:tip] = tip
 
-service.plot_sets
+service.crisp_input = 1.5
+service.plot_sets( { :plot_input => true } )
 tip.plot_sets
 
 # Rules
@@ -31,6 +32,5 @@ engine.rules << Rule.new.IF(:good, service).THEN(:average, tip)
 engine.rules << Rule.new.IF(:excellent, service).THEN(:generous, tip)
 
 
-service.crisp_input = 1.5
 engine.infer
-tip.plot_sets false, true
+tip.plot_sets( { :plot_output => true } )

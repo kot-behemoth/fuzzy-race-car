@@ -21,6 +21,8 @@ class Rule
   def evaluate!
     @then_var.membership_functions[@then_mf].weight = \
       @if_var.membership_functions[@if_mf].evaluate( @if_var.crisp_input )
+
+      @then_var.compute_crisp_output
   end
 
 end

@@ -3,13 +3,14 @@ require 'gnuplot'
 require_relative 'functions'
 
 class Variable
-  attr_accessor :membership_functions, :name, :crisp_input, :range
+  attr_accessor :membership_functions, :name, :crisp_input, :crisp_output, :range
 
   def initialize(name)
     @membership_functions = Hash.new
     @name = name
     @range = 0..0
-    @crisp_value = 0
+    @crisp_input = nil
+    @crisp_output = nil
   end
 
   def add_mf(mf)
@@ -25,7 +26,7 @@ class Variable
 
   end
 
-  def crisp_output
+  def compute_crisp_output
     moment = 0.0
     area = 0.0
 
@@ -41,7 +42,7 @@ class Variable
 
     #puts "MOMENT: #{moment} AREA: #{area}"
     #puts "MOMENT/AREA: #{moment/area}"
-    moment / area
+    @crisp_output = moment / area
   end
 
   def get_max_mf_value(x)
@@ -54,7 +55,11 @@ class Variable
     max
   end
 
-  def plot_sets(plot_to_file=false, plot_cog=false)
+  def plot_sets(opts={})
+    { :plot_to_file => false,
+      :plot_input => false,
+      :plot_output => false }.merge opts
+
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
         plot.mouse
@@ -66,13 +71,16 @@ class Variable
         plot.ylabel 'y'
         plot.arbitrary_lines << 'set key outside'
 
-        if(plot_to_file)
-          plot.terminal "png size 800,600 font 'Helvetica Neue, 11'"
-          plot.output "#{@name}.png"
-        end
-
-        if(plot_cog)
-          plot.arbitrary_lines << "set arrow from #{crisp_output},0 to #{crisp_output},1 nohead front"
+        case
+          when opts[:plot_to_file]
+            plot.terminal "png size 800,600 font 'Helvetica Neue, 11'"
+            plot.output "#{@name}.png"
+          when opts[:plot_input]
+            raise "No crisp input detected - can't plot it!" if @crisp_input.nil?
+            plot.arbitrary_lines << "set arrow from #{@crisp_input},0 to #{@crisp_input},1 nohead front"
+          when opts[:plot_output]
+            raise "No crisp output calculated - can't plot it!" if @crisp_output.nil?
+            plot.arbitrary_lines << "set arrow from #{@crisp_output},0 to #{@crisp_output},1 nohead front"
         end
 
         @membership_functions.values.each do |mf|
