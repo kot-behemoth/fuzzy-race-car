@@ -6,37 +6,6 @@ require './variable'
 include Gosu
 include Chingu
 
-engine = InferenceEngine.new
-
-# Fuzzification
-
-distance = Variable.create 'distance' do
-	membership_function Triangle.new(:left, -10, -10, -2.5)
-	membership_function Triangle.new(:centre, -5, 0, 5)
-	membership_function Triangle.new(:right, 2.5, 10, 10)
-end
-
-steering = Variable.create 'steering (angle)' do
-	membership_function Triangle.new(:left, -20, -20, -5)
-	membership_function Triangle.new(:centre, -10, 0, 10)
-	membership_function Triangle.new(:right, 5, 20, 20)
-end
-
-engine.variables[:distance] = distance
-engine.variables[:steering] = steering
-
-# service.crisp_input = 1.5
-# service.plot_sets( { :plot_input => true } )
-# tip.plot_sets
-
-# Rules
-
-engine.rules << Rule.new.IF(:left, distance).THEN(:right, steering)
-engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
-engine.rules << Rule.new.IF(:right, distance).THEN(:left, steering)
-
-# engine.infer
-
 class Game < Chingu::Window
 	def initialize
 		super 640, 480, false
@@ -101,10 +70,26 @@ class Player < Chingu::GameObject
 
 	def setup
 		super
-		@speed = 0.1
+		@speed = 30
+		@engine = create_inference_engine
 	end
 
 	def update
+		distance = @engine.variables[:distance]
+		steering = @engine.variables[:steering]
+
+		distance.crisp_input = @x - @road.x
+
+		# debug
+		# distance.plot_sets( { :plot_input => true } )
+
+		@engine.infer
+
+		# steering.plot_sets( { :plot_output => true } )
+		puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
+
+		@angle = steering.crisp_output*5.0
+		@velocity_x = Gosu.offset_x(@angle, @speed)
 		super
 	end
 
@@ -120,6 +105,42 @@ class Player < Chingu::GameObject
 
 	def rotate_right;  @angle += 3 unless @angle >= 180; end
 	def rotate_left;   @angle -= 3 unless @angle <= -180; end
+
+	private
+	def create_inference_engine
+		engine = InferenceEngine.new
+
+		# Fuzzification
+
+		d = 320.0
+
+		distance = Variable.create 'distance' do
+			membership_function Triangle.new(:left, -d, -d, -d/4)
+			membership_function Triangle.new(:centre, -d/2, 0, d/2)
+			membership_function Triangle.new(:right, d/4, d, d)
+		end
+
+		steering = Variable.create 'steering (angle)' do
+			membership_function Triangle.new(:left, -20, -20, -5)
+			membership_function Triangle.new(:centre, -10, 0, 10)
+			membership_function Triangle.new(:right, 5, 20, 20)
+		end
+
+		engine.variables[:distance] = distance
+		engine.variables[:steering] = steering
+
+		# distance.crisp_input = 0
+		# distance.plot_sets( { :plot_input => true } )
+		# steering.plot_sets
+
+		# Rules
+
+		engine.rules << Rule.new.IF(:left, distance).THEN(:right, steering)
+		# engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
+		engine.rules << Rule.new.IF(:right, distance).THEN(:left, steering)
+
+		engine
+	end
 end
 
 Game.new.show
