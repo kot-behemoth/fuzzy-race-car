@@ -70,7 +70,7 @@ class Player < Chingu::GameObject
 
 	def setup
 		super
-		@speed = 30
+		@speed = 10
 		@engine = create_inference_engine
 	end
 
