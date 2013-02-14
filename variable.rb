@@ -13,6 +13,12 @@ class Variable
     @crisp_output = nil
   end
 
+  def self.create(name, &block)
+    variable = Variable.new name
+    variable.instance_eval(&block) if block_given?
+    variable
+  end
+
   def add_mf(mf)
     @membership_functions[mf.name] = mf
 

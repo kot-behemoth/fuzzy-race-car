@@ -6,17 +6,17 @@ engine = InferenceEngine.new
 
 # Fuzzification
 
-service = Variable.new('service')
+service = Variable.create 'service' do
+	add_mf Triangle.new(:poor, 0, 0, 4)
+	add_mf Trapezoid.new(:good, 1, 4, 6, 9)
+	add_mf Triangle.new(:excellent, 6, 9, 9)
+end
 
-service.add_mf Triangle.new(:poor, 0, 0, 4)
-service.add_mf Trapezoid.new(:good, 1, 4, 6, 9)
-service.add_mf Triangle.new(:excellent, 6, 9, 9)
-
-tip = Variable.new('tip')
-
-tip.add_mf Triangle.new(:cheap, 0, 1, 2)
-tip.add_mf Trapezoid.new(:average, 1, 2.5, 3.5, 5)
-tip.add_mf Triangle.new(:generous, 4, 5, 6)
+tip = Variable.create 'tip' do
+	add_mf Triangle.new(:cheap, 0, 1, 2)
+	add_mf Trapezoid.new(:average, 1, 2.5, 3.5, 5)
+	add_mf Triangle.new(:generous, 4, 5, 6)
+end
 
 engine.variables[:service] = service
 engine.variables[:tip] = tip
