@@ -82,9 +82,7 @@ class Player < Chingu::GameObject
 
 		# debug
 		# distance.plot_sets( { :plot_input => true } )
-
 		@engine.infer
-
 		# steering.plot_sets( { :plot_output => true } )
 		puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
 
@@ -115,15 +113,15 @@ class Player < Chingu::GameObject
 		d = 320.0
 
 		distance = Variable.create 'distance' do
-			membership_function Triangle.new(:left, -d, -d, -d/4)
+			membership_function Triangle.new(:left, -d, -d, 0)
 			membership_function Triangle.new(:centre, -d/2, 0, d/2)
-			membership_function Triangle.new(:right, d/4, d, d)
+			membership_function Triangle.new(:right, 0, d, d)
 		end
 
 		steering = Variable.create 'steering (angle)' do
-			membership_function Triangle.new(:left, -20, -20, -5)
+			membership_function Triangle.new(:left, -20, -20, 0)
 			membership_function Triangle.new(:centre, -10, 0, 10)
-			membership_function Triangle.new(:right, 5, 20, 20)
+			membership_function Triangle.new(:right, 0, 20, 20)
 		end
 
 		engine.variables[:distance] = distance

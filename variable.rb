@@ -39,7 +39,7 @@ class Variable
     @range.step(MembershipFunction::PLOT_STEP) do |x|
       max_mf_value = get_max_mf_value(x)
       area += max_mf_value
-      moment += x.abs * max_mf_value
+      moment += x * max_mf_value
 
       #puts x.to_s + ' ' + get_max_mf_value(x).to_s
     end
