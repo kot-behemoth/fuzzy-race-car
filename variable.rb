@@ -19,7 +19,7 @@ class Variable
     variable
   end
 
-  def add_mf(mf)
+  def membership_function(mf)
     @membership_functions[mf.name] = mf
 
     # extend the range to include the range of the mf
