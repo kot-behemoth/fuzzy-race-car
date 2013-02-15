@@ -6,13 +6,13 @@ engine = InferenceEngine.new
 
 # Fuzzification
 
-service = Variable.create 'service' do
+service = LinguisticVariable.create 'service' do
 	membership_function Triangle.new(:poor, 0, 0, 4)
 	membership_function Trapezoid.new(:good, 1, 4, 6, 9)
 	membership_function Triangle.new(:excellent, 6, 9, 9)
 end
 
-tip = Variable.create 'tip' do
+tip = LinguisticVariable.create 'tip' do
 	membership_function Triangle.new(:cheap, 0, 1, 2)
 	membership_function Trapezoid.new(:average, 1, 2.5, 3.5, 5)
 	membership_function Triangle.new(:generous, 4, 5, 6)

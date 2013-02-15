@@ -2,7 +2,7 @@ require 'rubygems'
 require 'gnuplot'
 require_relative 'functions'
 
-class Variable
+class LinguisticVariable
   attr_accessor :membership_functions, :name, :crisp_input, :crisp_output, :range
 
   def initialize(name)
@@ -14,7 +14,7 @@ class Variable
   end
 
   def self.create(name, &block)
-    variable = Variable.new name
+    variable = LinguisticVariable.new name
     variable.instance_eval(&block) if block_given?
     variable
   end

@@ -112,13 +112,13 @@ class Player < Chingu::GameObject
 
 		d = $window.height/2.0
 
-		distance = Variable.create 'distance' do
+		distance = LinguisticVariable.create 'distance' do
 			membership_function Triangle.new(:left, -d, -d, 0)
 			membership_function Triangle.new(:centre, -d/2, 0, d/2)
 			membership_function Triangle.new(:right, 0, d, d)
 		end
 
-		steering = Variable.create 'steering (angle)' do
+		steering = LinguisticVariable.create 'steering (angle)' do
 			membership_function Triangle.new(:left, -20, -20, 0)
 			membership_function Triangle.new(:centre, -10, 0, 10)
 			membership_function Triangle.new(:right, 0, 20, 20)
@@ -127,14 +127,14 @@ class Player < Chingu::GameObject
 		engine.variables[:distance] = distance
 		engine.variables[:steering] = steering
 
-		# distance.crisp_input = 0
-		# distance.plot_sets( { :plot_input => true } )
-		# steering.plot_sets
+		distance.crisp_input = 0
+		distance.plot_sets( { :plot_input => true } )
+		steering.plot_sets
 
 		# Rules
 
 		engine.rules << Rule.new.IF(:left, distance).THEN(:right, steering)
-		# engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
+		engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
 		engine.rules << Rule.new.IF(:right, distance).THEN(:left, steering)
 
 		engine
