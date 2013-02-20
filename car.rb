@@ -7,7 +7,7 @@ class Car < Chingu::GameObject
 	trait :velocity
 	trait :retrofy
 	attr_accessor :speed, :screen_x, :screen_y, :text
-	attr_writer :road
+	attr_writer :road_x
 
 	def setup
 		super
@@ -22,7 +22,7 @@ class Car < Chingu::GameObject
 		distance = @engine.variables[:distance]
 		steering = @engine.variables[:steering]
 
-		distance.crisp_input = @x - @road.x
+		distance.crisp_input = @x - @road_x
 
 		self.screen_x = @x
 		self.screen_y = @y

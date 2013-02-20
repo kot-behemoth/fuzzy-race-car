@@ -20,11 +20,11 @@ class Game < Chingu::Window
 
 		retrofy
 		@car = Car.create( :x => $window.width/2.0,
-														 :y => $window.height/2.0,
-														 :image => Image['car.png'])
+											 :y => $window.height/2.0,
+											 :image => Image['car.png'])
 		@car.input = { :holding_up => :increase_speed,
-											:holding_down => :decrease_speed }
-		@car.road = @road
+									 :holding_down => :decrease_speed }
+		@road.car = @car
 	end
 
 	def update
