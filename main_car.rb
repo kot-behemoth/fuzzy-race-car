@@ -11,17 +11,16 @@ class Game < Chingu::Window
 		super 640, 480, false
 		self.input = { :esc => :exit }
 
-		@player = Player.create( :x => $window.width/2.0,
-														 :y => $window.height/2.0,
-														 :image => Image["spaceship.png"])
-		# @player.input = { :holding_left => :rotate_left,
-		# 									:holding_right => :rotate_right,
-		# 									:holding_up => :move_forward,
-		# 									:holding_down => :move_backward }
 		@road = Road.create( :x => $window.width/2.0,
 												 :y => $window.height/2.0 )
 		@road.input = { :holding_left => :move_left,
 										:holding_right => :move_right }
+		retrofy
+		@player = Player.create( :x => $window.width/2.0,
+														 :y => $window.height/2.0,
+														 :image => Image['car.png'])
+		@player.input = { :holding_up => :increase_speed,
+											:holding_down => :decrease_speed }
 		@player.road = @road
 	end
 
@@ -65,20 +64,27 @@ end
 
 class Player < Chingu::GameObject
 	trait :velocity
-	attr_accessor :speed
+	trait :retrofy
+	attr_accessor :speed, :screen_x, :screen_y, :text
 	attr_writer :road
 
 	def setup
 		super
-		@speed = 10
+		@speed = 2
+		self.scale = 5
 		@engine = create_inference_engine
+		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55, :factor_x => 2.0)
 	end
 
 	def update
+		super
 		distance = @engine.variables[:distance]
 		steering = @engine.variables[:steering]
 
 		distance.crisp_input = @x - @road.x
+
+		self.screen_x = @x
+		self.screen_y = @y
 
 		# debug
 		# distance.plot_sets( { :plot_input => true } )
@@ -86,9 +92,23 @@ class Player < Chingu::GameObject
 		# steering.plot_sets( { :plot_output => true } )
 		# puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
 
-		@angle = steering.crisp_output*10.0
+		@angle = steering.crisp_output
 		@velocity_x = Gosu.offset_x(@angle, @speed)
+
+		@text.text = "Angle: #{@angle}"
+	end
+
+	def draw
 		super
+		@text.draw
+	end
+
+	def increase_speed
+		@speed += 0.5
+	end
+
+	def decrease_speed
+		@speed -= 0.5
 	end
 
 	def move_forward
@@ -119,9 +139,9 @@ class Player < Chingu::GameObject
 		end
 
 		steering = LinguisticVariable.create 'steering (angle)' do
-			membership_function Triangle.new(:left, -20, -20, 0)
-			membership_function Triangle.new(:centre, -10, 0, 10)
-			membership_function Triangle.new(:right, 0, 20, 20)
+			membership_function Triangle.new(:left, -90, -90, 0)
+			membership_function Triangle.new(:centre, -45, 0, 45)
+			membership_function Triangle.new(:right, 0, 90, 90)
 		end
 
 		engine.variables[:distance] = distance
