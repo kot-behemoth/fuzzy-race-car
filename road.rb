@@ -18,16 +18,7 @@ class Road < Chingu::GameObject
 
 	def draw
 		super
-		# Chingu::Helpers::GFX.fill_rect(@rect, Color::WHITE)
-
-		color = Color::WHITE
-		rect = @rect
-
-		$window.draw_quad(rect.x, rect.y, color,
-                      rect.right, rect.y, color,
-                      rect.right, rect.bottom, color,
-                      rect.x, rect.bottom, color,
-                      zorder, :default)
+		$window.fill_rect @rect, Color::WHITE, 1
 	end
 
 	def move_left;  @x -= 3; end

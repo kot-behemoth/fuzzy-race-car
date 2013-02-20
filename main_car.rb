@@ -17,6 +17,7 @@ class Game < Chingu::Window
 												 :y => $window.height/2.0 )
 		@road.input = { :holding_left => :move_left,
 										:holding_right => :move_right }
+
 		retrofy
 		@player = Player.create( :x => $window.width/2.0,
 														 :y => $window.height/2.0,
@@ -30,6 +31,17 @@ class Game < Chingu::Window
 		super
 		self.caption = "Fuzzy inference system racing car, FPS: #{$window.fps}"
 	end
+
+	def draw
+		super
+		draw_background
+	end
+
+	def draw_background
+		rect = Rect.new 0, 0, width, height
+		fill_rect rect, Color::GREEN, -255
+	end
+	
 end
 
 Game.new.show
