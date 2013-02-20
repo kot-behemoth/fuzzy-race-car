@@ -1,24 +1,26 @@
 require 'rubygems'
 require 'chingu'
 include Gosu
-include Chingu
 
 class Road < Chingu::GameObject
-	attr_accessor :rect
+	attr_accessor :middle_line_rect, :tarmac_rect
 
 	def setup
 		super
-		@rect = Chingu::Rect.new(0, 0, 10, $window.height)
+		@middle_line_rect = Chingu::Rect.new(0, 0, 8, $window.height)
+		@tarmac_rect = Chingu::Rect.new(0, 0, 300, $window.height)
 	end
 
 	def update
 		super
-		@rect.center = [@x, @y]
+		@middle_line_rect.center = [@x, @y]
+		@tarmac_rect.center = [@x, @y]
 	end
 
 	def draw
 		super
-		$window.fill_rect @rect, Color::WHITE, 1
+		$window.fill_rect(@middle_line_rect, Color::WHITE, 1)
+		$window.fill_rect(@tarmac_rect, Color::BLACK, 0)
 	end
 
 	def move_left;  @x -= 3; end

@@ -3,7 +3,7 @@ require 'chingu'
 include Gosu
 include Chingu
 
-class Player < Chingu::GameObject
+class Car < Chingu::GameObject
 	trait :velocity
 	trait :retrofy
 	attr_accessor :speed, :screen_x, :screen_y, :text
@@ -36,7 +36,7 @@ class Player < Chingu::GameObject
 		@angle = steering.crisp_output
 		@velocity_x = Gosu.offset_x(@angle, @speed)
 
-		@text.text = "Angle: #{@angle}"
+		@text.text = "Angle: #{@angle.round(2)}"
 	end
 
 	def draw
@@ -71,7 +71,7 @@ class Player < Chingu::GameObject
 
 		# Fuzzification
 
-		d = $window.height/2.0
+		d = $window.width/2.0
 
 		distance = LinguisticVariable.create 'distance' do
 			membership_function Triangle.new(:left, -d, -d, 0)

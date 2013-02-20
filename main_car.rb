@@ -3,7 +3,7 @@ require 'rubygems'
 require 'chingu'
 require './engine'
 require './variable'
-require './player'
+require './car'
 require './road'
 include Gosu
 include Chingu
@@ -19,12 +19,12 @@ class Game < Chingu::Window
 										:holding_right => :move_right }
 
 		retrofy
-		@player = Player.create( :x => $window.width/2.0,
+		@car = Car.create( :x => $window.width/2.0,
 														 :y => $window.height/2.0,
 														 :image => Image['car.png'])
-		@player.input = { :holding_up => :increase_speed,
+		@car.input = { :holding_up => :increase_speed,
 											:holding_down => :decrease_speed }
-		@player.road = @road
+		@car.road = @road
 	end
 
 	def update
@@ -38,8 +38,8 @@ class Game < Chingu::Window
 	end
 
 	def draw_background
-		rect = Rect.new 0, 0, width, height
-		fill_rect rect, Color::GREEN, -255
+		grass_rect = Chingu::Rect.new(0, 0, width, height)
+		fill_rect(grass_rect, Color::GREEN, -255)
 	end
 	
 end
