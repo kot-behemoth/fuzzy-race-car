@@ -30,8 +30,13 @@ class Road < Chingu::GameObject
 		$window.fill_rect(@tarmac_rect, Color::BLACK, 0)
 	end
 
-	def move_left;  @x -= 3; end
-	def move_right; @x += 3; end
+	def move_left
+		@x -= 3 unless @x <= 0
+	end
+
+	def move_right
+		@x += 3 unless @x >= $window.width
+	end
 
 	def toggle_oscillation; @oscillating = !@oscillating; end
 
