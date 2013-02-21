@@ -8,10 +8,12 @@ class Car < Chingu::GameObject
 	trait :retrofy
 	attr_accessor :speed, :screen_x, :screen_y, :text
 	attr_writer :road_x
+	attr_reader :previous_distance
 
 	def setup
 		super
 		@speed = 2
+		@previous_distance = 0
 		self.scale = 5
 		@engine = create_inference_engine
 		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55, :color => Color::RED, :factor_x => 2.0, :factor_y => 2.0)
@@ -31,26 +33,28 @@ class Car < Chingu::GameObject
 	end
 
 	def update_fuzzy()
-		distance = @engine.variables[:distance]
-		steering = @engine.variables[:steering]
-		delta = @engine.variables[:delta]
-		speed = @engine.variables[:speed]
+		distance_var = @engine.variables[:distance]
+		steering_var = @engine.variables[:steering]
+		# delta_var = @engine.variables[:delta]
 
 		# Update inputs
-		distance.crisp_input = @x - @road_x
-		# delta.crisp_input = @velocity_x
+		distance = @x - @road_x
+		distance_var.crisp_input = distance
+		# delta_var.crisp_input = (@previous_distance - distance).abs
+
+		@previous_distance = distance
 
 		# Infer
 		@engine.infer
 
 		# Update outputs
-		@angle = steering.crisp_output
+		@angle = steering_var.crisp_output
 		# @speed = speed.crisp_output
 
 		# Plots etc
-		distance.plot_sets( { :plot_input => true } )
+		distance_var.plot_sets( { :plot_input => true } )
 		# delta.plot_sets( { :plot_input => true } )
-		steering.plot_sets( { :plot_output => true } )
+		steering_var.plot_sets( { :plot_output => true } )
 		# speed.plot_sets( { :plot_output => true } )
 		@engine.reset_state
 	end
@@ -96,9 +100,9 @@ class Car < Chingu::GameObject
 		end
 
 		delta = LinguisticVariable.create 'delta' do
-			membership_function Triangle.new(:small, 0, 5, 10)
-			membership_function Triangle.new(:medium, 5, 10, 15)
-			membership_function Triangle.new(:big, 10, 15, 20)
+			membership_function Triangle.new(:small, 0, 25, 50)
+			membership_function Triangle.new(:medium, 25, 50, 75)
+			membership_function Triangle.new(:big, 50, 75, 100)
 		end
 
 		steering = LinguisticVariable.create 'steering' do
@@ -108,16 +112,9 @@ class Car < Chingu::GameObject
 		end
 		steering.is_output = true
 
-		speed = LinguisticVariable.create 'speed' do
-			membership_function Triangle.new(:slow, 5, 5, 15)
-			membership_function Triangle.new(:medium, 10, 15, 20)
-			membership_function Triangle.new(:fast, 15, 20, 25)
-		end
-
 		engine.variables[:distance] = distance
 		# engine.variables[:delta] = delta
 		engine.variables[:steering] = steering
-		# engine.variables[:speed] = speed
 
 		# distance.crisp_input = 0
 		# distance.plot_sets( { :plot_input => true } )
@@ -125,9 +122,22 @@ class Car < Chingu::GameObject
 
 		# Rules
 
-		engine.rules << Rule.new.IF(:left, distance).THEN(:right, steering)
-		engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
-		engine.rules << Rule.new.IF(:right, distance).THEN(:left, steering)
+		engine.rules << Rule.create do
+			IF( :left, distance ).THEN( :right, steering )
+		end
+
+		engine.rules << Rule.create do
+			IF( :centre, distance ).THEN( :centre, steering )
+		end
+
+		engine.rules << Rule.create do
+			IF( :right, distance ).THEN( :left, steering )
+		end
+
+
+		# engine.rules << Rule.new.IF(:left, distance).THEN(:right, steering)
+		# engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
+		# engine.rules << Rule.new.IF(:right, distance).THEN(:left, steering)
 
 		# engine.rules << Rule.new.IF(:small, delta).THEN(:medium, speed)
 		# engine.rules << Rule.new.IF(:big, delta).THEN(:fast, speed)
