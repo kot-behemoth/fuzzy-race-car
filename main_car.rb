@@ -9,6 +9,7 @@ include Gosu
 include Chingu
 
 class Game < Chingu::Window
+	
 	def initialize
 		super 640, 480, false
 		self.input = { :esc => :exit }
@@ -16,7 +17,8 @@ class Game < Chingu::Window
 		@road = Road.create( :x => $window.width/2.0,
 												 :y => $window.height/2.0 )
 		@road.input = { :holding_left => :move_left,
-										:holding_right => :move_right }
+										:holding_right => :move_right,
+										:released_space => :toggle_oscillation }
 
 		retrofy
 		@car = Car.create( :x => $window.width/2.0,

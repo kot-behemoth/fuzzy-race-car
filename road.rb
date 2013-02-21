@@ -5,9 +5,11 @@ include Gosu
 class Road < Chingu::GameObject
 	attr_accessor :middle_line_rect, :tarmac_rect
 	attr_accessor :car
+	attr_reader :oscillating
 
 	def setup
 		super
+		oscillating = false
 		@middle_line_rect = Chingu::Rect.new(0, 0, 8, $window.height)
 		@tarmac_rect = Chingu::Rect.new(0, 0, 300, $window.height)
 	end
@@ -31,10 +33,12 @@ class Road < Chingu::GameObject
 	def move_left;  @x -= 3; end
 	def move_right; @x += 3; end
 
-	def toggle_oscillation; end
+	def toggle_oscillation; @oscillating = !@oscillating; end
 
 	def oscillate
-		@x = $window.width/2.0 * (1 + Math.sin(Gosu::milliseconds/4000.0))
+		if oscillating
+			@x = $window.width/2.0 * (1 + Math.sin(Gosu::milliseconds/4000.0))#/@car.speed))
+		end
 	end
 
 end
