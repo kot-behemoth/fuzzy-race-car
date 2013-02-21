@@ -25,4 +25,8 @@ class Rule
     @then_var.membership_functions[@then_mf].weight = Fuzzy.OR(then_mf_weight, if_mf_weight)
   end
 
+  def reset_state
+    then_var.membership_functions[@then_mf].weight = 1
+  end
+
 end

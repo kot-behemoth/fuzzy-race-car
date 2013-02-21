@@ -52,6 +52,7 @@ class Car < Chingu::GameObject
 		# delta.plot_sets( { :plot_input => true } )
 		steering.plot_sets( { :plot_output => true } )
 		# speed.plot_sets( { :plot_output => true } )
+		@engine.reset_state
 	end
 
 	def draw

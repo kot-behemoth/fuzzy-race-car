@@ -1,5 +1,5 @@
-require_relative 'rule'
-require_relative 'variable'
+require './rule'
+require './variable'
 
 class InferenceEngine
   attr_accessor :rules, :variables
@@ -15,10 +15,17 @@ class InferenceEngine
       rule.evaluate!
     end
 
+    # Compute the output
     @variables.values.each do |var|
       var.compute_crisp_output if var.is_output
     end
 
+  end
+
+  def reset_state
+    rules.each do |rule|
+      rule.reset_state
+    end
   end
 
 end
