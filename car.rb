@@ -40,7 +40,7 @@ class Car < Chingu::GameObject
 		# Update inputs
 		distance = @x - @road_x
 		distance_var.crisp_input = distance
-		delta_var.crisp_input = @previous_distance - distance
+		delta_var.crisp_input = distance - @previous_distance
 
 		@previous_distance = distance
 
@@ -100,9 +100,9 @@ class Car < Chingu::GameObject
 		end
 
 		delta = LinguisticVariable.create 'delta' do
-			add_mf Triangle.new(:small_left, 	-50, -50, 0)
-			add_mf Triangle.new(:centre, 			-25, 0, 25)
-			add_mf Triangle.new(:small_right,  0, 50, 50)
+			add_mf Triangle.new(:small_left, 	-10, -10, 0)
+			# add_mf Triangle.new(:centre, 			-25, 0, 25)
+			add_mf Triangle.new(:small_right,  0, 10, 10)
 		end
 
 		steering = LinguisticVariable.create 'steering' do
@@ -127,7 +127,7 @@ class Car < Chingu::GameObject
 		engine.rules << Rule.create do
 			IF( distance, :centre ).THEN( steering, :centre )
 			# AND
-			IF( delta, :centre ).THEN( steering, :centre )
+			# IF( delta, :centre ).THEN( steering, :centre )
 		end
 
 		engine.rules << Rule.create do
@@ -135,14 +135,6 @@ class Car < Chingu::GameObject
 			# AND
 			IF( delta, :small_right ).THEN( steering, :left )
 		end
-
-
-		# engine.rules << Rule.new.IF(:left, distance).THEN(:right, steering)
-		# engine.rules << Rule.new.IF(:centre, distance).THEN(:centre, steering)
-		# engine.rules << Rule.new.IF(:right, distance).THEN(:left, steering)
-
-		# engine.rules << Rule.new.IF(:small, delta).THEN(:medium, speed)
-		# engine.rules << Rule.new.IF(:big, delta).THEN(:fast, speed)
 
 		engine
 	end
