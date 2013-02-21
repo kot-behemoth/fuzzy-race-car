@@ -4,7 +4,8 @@ require './utils'
 require_relative 'functions'
 
 class LinguisticVariable
-	attr_accessor :membership_functions, :name, :crisp_input, :crisp_output, :range, :gnuplot
+	attr_accessor :crisp_input, :name, :is_output
+	attr_reader :membership_functions, :crisp_output, :range, :gnuplot
 
 	def self.finalize(obj_id)
 		proc do
@@ -19,6 +20,7 @@ class LinguisticVariable
 		@range = 0..0
 		@crisp_input = nil
 		@crisp_output = nil
+		@is_output = false
 		@gnuplot = Gnuplot.start
 
 		# ObjectSpace.define_finalizer( self, self.class.finalize(object_id) )

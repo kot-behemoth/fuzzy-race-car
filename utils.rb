@@ -29,3 +29,31 @@ def clamp(val, min, max)
       val
   end
 end
+
+def max(a, b)
+  if a > b
+    a
+  else
+    b
+  end
+end
+
+def min(a, b)
+  if a < b
+    a
+  else
+    b
+  end
+end
+
+module Fuzzy
+
+  def Fuzzy.OR(a, b)
+    min a, b
+  end
+
+  def Fuzzy.AND(a, b)
+    max a, b
+  end
+
+end

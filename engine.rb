@@ -10,9 +10,15 @@ class InferenceEngine
   end
 
   def infer
+    # Apply rules
     rules.each do |rule|
       rule.evaluate!
     end
+
+    @variables.values.each do |var|
+      var.compute_crisp_output if var.is_output
+    end
+
   end
 
 end
