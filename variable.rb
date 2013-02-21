@@ -81,13 +81,12 @@ class LinguisticVariable
 		Gnuplot::Plot.new( gnuplot ) do |plot|
 			plot.mouse
 			plot.view
-			arb_lines = ['']
 
 			plot.yrange '[0:1]'
 			plot.title @name
 			plot.xlabel 'x'
 			plot.ylabel 'y'
-			arb_lines << 'set key outside'
+			plot.arbitrary_lines << 'set key outside'
 
 			case
 				when opts[:plot_to_file]
@@ -95,13 +94,11 @@ class LinguisticVariable
 					plot.output "#{@name}.png"
 				when opts[:plot_input]
 					raise "No crisp input detected - can't plot it!" if @crisp_input.nil?
-					arb_lines << "set arrow from #{@crisp_input},0 to #{@crisp_input},1 nohead front"
+					plot.arbitrary_lines << "set arrow 1 from #{@crisp_input},0 to #{@crisp_input},1 nohead front"
 				when opts[:plot_output]
 					raise "No crisp output calculated - can't plot it!" if @crisp_output.nil?
-					arb_lines << "set arrow from #{@crisp_output},0 to #{@crisp_output},1 nohead front"
+					plot.arbitrary_lines << "set arrow 2 from #{@crisp_output},0 to #{@crisp_output},1 nohead front"
 			end
-
-			plot.arbitrary_lines = arb_lines
 
 			@membership_functions.values.each do |mf|
 				plot.add_data mf.get_dataset

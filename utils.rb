@@ -19,4 +19,13 @@ def normalise(min, max, x)
   (x-min) / (max-min).to_f
 end
 
-
+def clamp(val, min, max)
+  case
+    when val <= min
+      min
+    when val >= max
+      max
+    else
+      val
+  end
+end

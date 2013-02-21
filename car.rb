@@ -14,7 +14,7 @@ class Car < Chingu::GameObject
 		@speed = 2
 		self.scale = 5
 		@engine = create_inference_engine
-		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55)
+		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55, :color => Color::RED)
 	end
 
 	def update
@@ -28,9 +28,9 @@ class Car < Chingu::GameObject
 		self.screen_y = @y
 
 		# debug
-		# distance.plot_sets( { :plot_input => true } )
+		distance.plot_sets( { :plot_input => true } )
 		@engine.infer
-		# steering.plot_sets( { :plot_output => true } )
+		steering.plot_sets( { :plot_output => true } )
 		# puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
 
 		@angle = steering.crisp_output
@@ -45,11 +45,11 @@ class Car < Chingu::GameObject
 	end
 
 	def increase_speed
-		@speed += 0.5
+		@speed += 0.5 unless @speed >= 15
 	end
 
 	def decrease_speed
-		@speed -= 0.5
+		@speed -= 0.5 unless @speed <= 0.5
 	end
 
 	def move_forward
@@ -71,7 +71,7 @@ class Car < Chingu::GameObject
 
 		# Fuzzification
 
-		d = $window.width/2.0
+		d = $window.width / 2.0
 
 		distance = LinguisticVariable.create 'distance' do
 			membership_function Triangle.new(:left, -d, -d, 0)

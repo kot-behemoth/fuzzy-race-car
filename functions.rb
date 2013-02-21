@@ -1,4 +1,4 @@
-require_relative 'utils'
+require './utils'
 
 class MembershipFunction
 	PLOT_STEP = 1
@@ -41,7 +41,7 @@ class Trapezoid < MembershipFunction
 				0
 		end
 
-		f * weight
+		clamp( f, 0, weight )
 	end
  
 	def get_dataset
@@ -109,7 +109,7 @@ class Triangle < MembershipFunction
 			end
 		end
 
-		f * weight
+		clamp( f, 0, weight )
 	end
 
 	def get_dataset
