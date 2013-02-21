@@ -1,3 +1,11 @@
+require 'rubygems'
+require 'gnuplot'
+
+def Gnuplot.start( persist=true )
+  cmd = Gnuplot.gnuplot( persist )
+  return IO::popen( cmd, "w+")
+end
+
 def lerp(min, max, t)
   #raise 'Range error - min >= max' if min >= max
   raise 'Range error - t is not in [0, 1]' if t < 0 or t > 1
@@ -10,4 +18,5 @@ def normalise(min, max, x)
 
   (x-min) / (max-min).to_f
 end
+
 

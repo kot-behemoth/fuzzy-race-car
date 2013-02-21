@@ -1,101 +1,114 @@
 require 'rubygems'
 require 'gnuplot'
+require './utils'
 require_relative 'functions'
 
 class LinguisticVariable
-  attr_accessor :membership_functions, :name, :crisp_input, :crisp_output, :range
+	attr_accessor :membership_functions, :name, :crisp_input, :crisp_output, :range, :gnuplot
 
-  def initialize(name)
-    @membership_functions = Hash.new
-    @name = name
-    @range = 0..0
-    @crisp_input = nil
-    @crisp_output = nil
-  end
+	def self.finalize(obj_id)
+		proc do
+			obj = ObjectSpace._id2ref(obj_id)
+			obj.gnuplot.close unless objgnuplot.nil?
+		end
+	end
 
-  def self.create(name, &block)
-    variable = LinguisticVariable.new name
-    variable.instance_eval(&block) if block_given?
-    variable
-  end
+	def initialize(name)
+		@membership_functions = Hash.new
+		@name = name
+		@range = 0..0
+		@crisp_input = nil
+		@crisp_output = nil
+		@gnuplot = Gnuplot.start
 
-  def membership_function(mf)
-    @membership_functions[mf.name] = mf
+		# ObjectSpace.define_finalizer( self, self.class.finalize(object_id) )
+		ObjectSpace.define_finalizer( self, proc { gnuplot.close } )
+	end
 
-    # extend the range to include the range of the mf
-    if mf.range.min < @range.min
-      @range = mf.range.min..@range.max
-    end
-    if mf.range.max > @range.max
-      @range = @range.min..mf.range.max
-    end
+	def self.create(name, &block)
+		variable = LinguisticVariable.new name
+		variable.instance_eval(&block) if block_given?
+		variable
+	end
 
-  end
+	def membership_function(mf)
+		@membership_functions[mf.name] = mf
 
-  def compute_crisp_output
-    moment = 0.0
-    area = 0.0
+		# extend the range to include the range of the mf
+		if mf.range.min < @range.min
+			@range = mf.range.min..@range.max
+		end
+		if mf.range.max > @range.max
+			@range = @range.min..mf.range.max
+		end
 
-    @range.step(MembershipFunction::PLOT_STEP) do |x|
-      max_mf_value = get_max_mf_value(x)
-      area += max_mf_value
-      moment += x * max_mf_value
+	end
 
-      #puts x.to_s + ' ' + get_max_mf_value(x).to_s
-    end
+	def compute_crisp_output
+		moment = 0.0
+		area = 0.0
 
-    # raise 'Error in COG calculations!' if moment <= 0 or area <= 0
+		@range.step(MembershipFunction::PLOT_STEP) do |x|
+			max_mf_value = get_max_mf_value(x)
+			area += max_mf_value
+			moment += x * max_mf_value
 
-    #puts "MOMENT: #{moment} AREA: #{area}"
-    #puts "MOMENT/AREA: #{moment/area}"
-    @crisp_output = moment / area
-  end
+			#puts x.to_s + ' ' + get_max_mf_value(x).to_s
+		end
 
-  def get_max_mf_value(x)
-    max = 0
+		# raise 'Error in COG calculations!' if moment <= 0 or area <= 0
 
-    @membership_functions.values.each do |mf|
-      max = mf.evaluate(x) if mf.evaluate(x) > max
-    end
+		#puts "MOMENT: #{moment} AREA: #{area}"
+		#puts "MOMENT/AREA: #{moment/area}"
+		@crisp_output = moment / area
+	end
 
-    max
-  end
+	def get_max_mf_value(x)
+		max = 0
 
-  def plot_sets(opts={})
-    { :plot_to_file => false,
-      :plot_input => false,
-      :plot_output => false }.merge opts
+		@membership_functions.values.each do |mf|
+			max = mf.evaluate(x) if mf.evaluate(x) > max
+		end
 
-    Gnuplot.open do |gp|
-      Gnuplot::Plot.new( gp ) do |plot|
-        plot.mouse
-        plot.view
+		max
+	end
 
-        plot.yrange '[0:1]'
-        plot.title @name
-        plot.xlabel 'x'
-        plot.ylabel 'y'
-        plot.arbitrary_lines << 'set key outside'
+	def plot_sets(opts={})
+		{ :plot_to_file => false,
+			:plot_input => false,
+			:plot_output => false }.merge opts
 
-        case
-          when opts[:plot_to_file]
-            plot.terminal "png size 800,600 font 'Helvetica Neue, 11'"
-            plot.output "#{@name}.png"
-          when opts[:plot_input]
-            raise "No crisp input detected - can't plot it!" if @crisp_input.nil?
-            plot.arbitrary_lines << "set arrow from #{@crisp_input},0 to #{@crisp_input},1 nohead front"
-          when opts[:plot_output]
-            raise "No crisp output calculated - can't plot it!" if @crisp_output.nil?
-            plot.arbitrary_lines << "set arrow from #{@crisp_output},0 to #{@crisp_output},1 nohead front"
-        end
+		Gnuplot::Plot.new( gnuplot ) do |plot|
+			plot.mouse
+			plot.view
+			arb_lines = ['']
 
-        @membership_functions.values.each do |mf|
-          plot.data << mf.get_dataset
-        end
+			plot.yrange '[0:1]'
+			plot.title @name
+			plot.xlabel 'x'
+			plot.ylabel 'y'
+			arb_lines << 'set key outside'
 
-      end
-    end
+			case
+				when opts[:plot_to_file]
+					plot.terminal "png size 800,600 font 'Helvetica Neue, 11'"
+					plot.output "#{@name}.png"
+				when opts[:plot_input]
+					raise "No crisp input detected - can't plot it!" if @crisp_input.nil?
+					arb_lines << "set arrow from #{@crisp_input},0 to #{@crisp_input},1 nohead front"
+				when opts[:plot_output]
+					raise "No crisp output calculated - can't plot it!" if @crisp_output.nil?
+					arb_lines << "set arrow from #{@crisp_output},0 to #{@crisp_output},1 nohead front"
+			end
 
-  end
+			plot.arbitrary_lines = arb_lines
+
+			@membership_functions.values.each do |mf|
+				plot.add_data mf.get_dataset
+			end
+
+		end
+
+	end
 
 end
