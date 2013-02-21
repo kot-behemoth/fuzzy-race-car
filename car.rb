@@ -14,7 +14,7 @@ class Car < Chingu::GameObject
 		@speed = 2
 		self.scale = 5
 		@engine = create_inference_engine
-		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55, :color => Color::RED)
+		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55, :color => Color::RED, :factor_x => 2.0, :factor_y => 2.0)
 	end
 
 	def update
@@ -27,11 +27,9 @@ class Car < Chingu::GameObject
 		self.screen_x = @x
 		self.screen_y = @y
 
-		# debug
-		distance.plot_sets( { :plot_input => true } )
 		@engine.infer
+		distance.plot_sets( { :plot_input => true } )
 		steering.plot_sets( { :plot_output => true } )
-		# puts "Distance: #{distance.crisp_input} Steering: #{steering.crisp_output}"
 
 		@angle = steering.crisp_output
 		@velocity_x = Gosu.offset_x(@angle, @speed)
