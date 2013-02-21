@@ -35,12 +35,12 @@ class Car < Chingu::GameObject
 	def update_fuzzy()
 		distance_var = @engine.variables[:distance]
 		steering_var = @engine.variables[:steering]
-		# delta_var = @engine.variables[:delta]
+		delta_var = @engine.variables[:delta]
 
 		# Update inputs
 		distance = @x - @road_x
 		distance_var.crisp_input = distance
-		# delta_var.crisp_input = (@previous_distance - distance).abs
+		delta_var.crisp_input = @previous_distance - distance
 
 		@previous_distance = distance
 
@@ -49,13 +49,13 @@ class Car < Chingu::GameObject
 
 		# Update outputs
 		@angle = steering_var.crisp_output
-		# @speed = speed.crisp_output
 
 		# Plots etc
 		distance_var.plot_sets( { :plot_input => true } )
-		# delta.plot_sets( { :plot_input => true } )
+		delta_var.plot_sets( { :plot_input => true } )
 		steering_var.plot_sets( { :plot_output => true } )
-		# speed.plot_sets( { :plot_output => true } )
+
+		# Reset the inference engine state
 		@engine.reset_state
 	end
 
@@ -94,44 +94,46 @@ class Car < Chingu::GameObject
 		d = $window.width / 2.0
 
 		distance = LinguisticVariable.create 'distance' do
-			membership_function Triangle.new(:left, -d, -d, 0)
-			membership_function Triangle.new(:centre, -d/2, 0, d/2)
-			membership_function Triangle.new(:right, 0, d, d)
+			add_mf Triangle.new(:left, 		-d, -d, 0)
+			add_mf Triangle.new(:centre, 	-d/2, 0, d/2)
+			add_mf Triangle.new(:right, 	 0, d, d)
 		end
 
 		delta = LinguisticVariable.create 'delta' do
-			membership_function Triangle.new(:small, 0, 25, 50)
-			membership_function Triangle.new(:medium, 25, 50, 75)
-			membership_function Triangle.new(:big, 50, 75, 100)
+			add_mf Triangle.new(:small_left, 	-50, -50, 0)
+			add_mf Triangle.new(:centre, 			-25, 0, 25)
+			add_mf Triangle.new(:small_right,  0, 50, 50)
 		end
 
 		steering = LinguisticVariable.create 'steering' do
-			membership_function Triangle.new(:left, -90, -90, 0)
-			membership_function Triangle.new(:centre, -45, 0, 45)
-			membership_function Triangle.new(:right, 0, 90, 90)
+			add_mf Triangle.new(:left, 		-90, -90, 0)
+			add_mf Triangle.new(:centre, 	-45, 0, 45)
+			add_mf Triangle.new(:right, 	 0, 90, 90)
 		end
 		steering.is_output = true
 
 		engine.variables[:distance] = distance
-		# engine.variables[:delta] = delta
+		engine.variables[:delta] = delta
 		engine.variables[:steering] = steering
-
-		# distance.crisp_input = 0
-		# distance.plot_sets( { :plot_input => true } )
-		# steering.plot_sets
 
 		# Rules
 
 		engine.rules << Rule.create do
-			IF( :left, distance ).THEN( :right, steering )
+			IF( distance, :left ).THEN( steering, :right )
+			# AND
+			IF( delta, :small_left ).THEN( steering, :right )
 		end
 
 		engine.rules << Rule.create do
-			IF( :centre, distance ).THEN( :centre, steering )
+			IF( distance, :centre ).THEN( steering, :centre )
+			# AND
+			IF( delta, :centre ).THEN( steering, :centre )
 		end
 
 		engine.rules << Rule.create do
-			IF( :right, distance ).THEN( :left, steering )
+			IF( distance, :right ).THEN( steering, :left )
+			# AND
+			IF( delta, :small_right ).THEN( steering, :left )
 		end
 
 

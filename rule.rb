@@ -14,13 +14,13 @@ class Rule
 		@then_mf = nil
 	end
 
-	def IF(if_mf, if_var)
+	def IF(if_var, if_mf)
 		raise "Variable #{if_var.name} does not have the #{if_mf.to_s} membership function!" if if_var.membership_functions[if_mf].nil?
 		@if_pairs << [if_var, if_mf]
 		self
 	end
 
-	def THEN(then_mf, then_var)
+	def THEN(then_var, then_mf)
 		raise "Variable #{then_var.name} does not have the #{then_mf.to_s} membership function!" if then_var.membership_functions[then_mf].nil?
 		@then_var = then_var
 		@then_mf = then_mf

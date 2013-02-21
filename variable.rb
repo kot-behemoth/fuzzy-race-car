@@ -33,7 +33,7 @@ class LinguisticVariable
 		variable
 	end
 
-	def membership_function(mf)
+	def add_mf(mf)
 		@membership_functions[mf.name] = mf
 
 		# extend the range to include the range of the mf
