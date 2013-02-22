@@ -28,22 +28,27 @@ class Rule
 	end
 
 	def AND
+		self
 	end
 
 	def evaluate!
-		aggregate = 0
+		# raise "Not a composite rule!" if @if_pairs.size != 2
+		aggregate = 1.0
 
 		@if_pairs.each do |if_var, if_mf|
 			if_mf_weight = if_var.membership_functions[if_mf].evaluate( if_var.crisp_input )
-			aggregate = Fuzzy.AND(aggregate, if_mf_weight)
+			aggregate = Fuzzy.OR(aggregate, if_mf_weight)
 		end
 
 		then_mf_weight = @then_var.membership_functions[@then_mf].weight
-		@then_var.membership_functions[@then_mf].weight = Fuzzy.OR(then_mf_weight, aggregate)
+		@then_var.membership_functions[@then_mf].weight = Fuzzy.AND(then_mf_weight, aggregate)
+
+		# Sanity check
+		raise "Wrongly adjusted weight!" unless then_mf_weight >= 0 and then_mf_weight <= 1
 	end
 
 	def reset_state
-		@then_var.membership_functions[@then_mf].weight = 1
+		@then_var.membership_functions[@then_mf].weight = 0.0
 	end
 
 end

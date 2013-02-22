@@ -4,8 +4,8 @@ require './utils'
 require_relative 'functions'
 
 class LinguisticVariable
-	attr_accessor :crisp_input, :name, :is_output
-	attr_reader :membership_functions, :crisp_output, :range, :gnuplot
+	attr_accessor :crisp_input, :name
+	attr_reader :membership_functions, :crisp_output, :range, :gnuplot, :is_output
 
 	def self.finalize(obj_id)
 		proc do
@@ -31,6 +31,10 @@ class LinguisticVariable
 		variable = LinguisticVariable.new name
 		variable.instance_eval(&block) if block_given?
 		variable
+	end
+
+	def set_as_output
+		@is_output = true
 	end
 
 	def add_mf(mf)
@@ -62,11 +66,15 @@ class LinguisticVariable
 
 		#puts "MOMENT: #{moment} AREA: #{area}"
 		#puts "MOMENT/AREA: #{moment/area}"
-		@crisp_output = moment / area
+		if( area != 0.0 )
+			@crisp_output = moment / area
+		else
+			@crisp_output = 0.0
+		end
 	end
 
 	def get_max_mf_value(x)
-		max = 0
+		max = 0.0
 
 		@membership_functions.values.each do |mf|
 			max = mf.evaluate(x) if mf.evaluate(x) > max

@@ -1,7 +1,7 @@
 require './utils'
 
 class MembershipFunction
-	PLOT_STEP = 1
+	PLOT_STEP = 0.01
 
 	def evaluate(x)
 		raise 'Not implemented'

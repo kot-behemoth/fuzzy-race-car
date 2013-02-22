@@ -4,15 +4,20 @@ include Gosu
 include Chingu
 
 class Car < Chingu::GameObject
+
+	MAX_ANGLE = 90
+	MAX_DELTA = 20.0
+
 	trait :velocity
 	trait :retrofy
 	attr_accessor :speed, :screen_x, :screen_y, :text
 	attr_writer :road_x
-	attr_reader :previous_distance
+	attr_reader :previous_distance, :d
 
 	def setup
 		super
 		@speed = 2
+		@d = 0
 		@previous_distance = 0
 		self.scale = 5
 		@engine = create_inference_engine
@@ -29,7 +34,7 @@ class Car < Chingu::GameObject
 
 		update_fuzzy
 
-		@text.text = "Angle: #{@angle.round(2)}"
+		@text.text = "Distance: #{d.round(2)}\nAngle: #{@angle.round(2)}"
 	end
 
 	def update_fuzzy()
@@ -39,8 +44,10 @@ class Car < Chingu::GameObject
 
 		# Update inputs
 		distance = @x - @road_x
-		distance_var.crisp_input = distance
-		delta_var.crisp_input = distance - @previous_distance
+		distance_n = distance / $window.width
+		distance_var.crisp_input = distance_n
+		@d = distance_n
+		delta_var.crisp_input = 0#(@previous_distance - distance)/MAX_DELTA
 
 		@previous_distance = distance
 
@@ -48,7 +55,9 @@ class Car < Chingu::GameObject
 		@engine.infer
 
 		# Update outputs
-		@angle = steering_var.crisp_output
+		new_angle = steering_var.crisp_output * MAX_ANGLE
+		raise "New angle is crazy: #{new_angle}!" if new_angle.nan? or new_angle < -65 or new_angle > 65
+		@angle = new_angle
 
 		# Plots etc
 		distance_var.plot_sets( { :plot_input => true } )
@@ -91,50 +100,58 @@ class Car < Chingu::GameObject
 
 		# Fuzzification
 
-		d = $window.width / 2.0
-
 		distance = LinguisticVariable.create 'distance' do
-			add_mf Triangle.new(:left, 		-d, -d, 0)
-			add_mf Triangle.new(:centre, 	-d/2, 0, d/2)
-			add_mf Triangle.new(:right, 	 0, d, d)
+			add_mf Triangle.new(:left, 		-1, -1, 0)
+			add_mf Triangle.new(:centre, 	-0.5, 0, 0.5)
+			add_mf Triangle.new(:right, 	 0, 1, 1)
 		end
 
 		delta = LinguisticVariable.create 'delta' do
-			add_mf Triangle.new(:small_left, 	-10, -10, 0)
-			# add_mf Triangle.new(:centre, 			-25, 0, 25)
-			add_mf Triangle.new(:small_right,  0, 10, 10)
+			add_mf Triangle.new(:left, 			-1, -1, 0)
+			add_mf Triangle.new(:centre,		-0.5, 0, 0.5)
+			add_mf Triangle.new(:right,  		 0, 1, 1)
 		end
 
 		steering = LinguisticVariable.create 'steering' do
-			add_mf Triangle.new(:left, 		-90, -90, 0)
-			add_mf Triangle.new(:centre, 	-45, 0, 45)
-			add_mf Triangle.new(:right, 	 0, 90, 90)
+			set_as_output
+
+			add_mf Triangle.new(:left, 		-1, -1, 0)
+			add_mf Triangle.new(:centre, 	-0.5, 0, 0.5)
+			add_mf Triangle.new(:right, 	 0, 1, 1)
 		end
-		steering.is_output = true
 
 		engine.variables[:distance] = distance
-		engine.variables[:delta] = delta
+		engine.variables[:delta] 		= delta
 		engine.variables[:steering] = steering
 
 		# Rules
 
-		engine.rules << Rule.create do
-			IF( distance, :left ).THEN( steering, :right )
-			# AND
-			IF( delta, :small_left ).THEN( steering, :right )
-		end
+		# 							delta
+		# 
+		#						 | R | C | L
+		#						-+---+---+---
+		#						R|   | L | C 
+		#	distance	-+---+---+---
+		#						C| L | C | R 
+		#						-+---+---+---
+		#						L| C | R |   
 
-		engine.rules << Rule.create do
-			IF( distance, :centre ).THEN( steering, :centre )
-			# AND
-			# IF( delta, :centre ).THEN( steering, :centre )
-		end
+		# engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :right  ).THEN( steering, :left )
+		engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :centre ).THEN( steering, :left )
+		engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :left   ).THEN( steering, :centre )
 
-		engine.rules << Rule.create do
-			IF( distance, :right ).THEN( steering, :left )
-			# AND
-			IF( delta, :small_right ).THEN( steering, :left )
-		end
+		engine.rules << Rule.new.IF( distance, :centre ).AND.IF( delta, :right  ).THEN( steering, :left )
+		engine.rules << Rule.new.IF( distance, :centre ).AND.IF( delta, :centre ).THEN( steering, :centre )
+		engine.rules << Rule.new.IF( distance, :centre ).AND.IF( delta, :left   ).THEN( steering, :right )
+
+		engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :right  ).THEN( steering, :centre )
+		engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :centre ).THEN( steering, :right )
+		# engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :left   ).THEN( steering, :right )
+		# engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :left   ).THEN( steering, :right )
+
+		# engine.rules << Rule.new.IF( distance, :left ).THEN( steering, :right )
+		# engine.rules << Rule.new.IF( distance, :centre ).THEN( steering, :centre )
+		# engine.rules << Rule.new.IF( distance, :right ).THEN( steering, :left )
 
 		engine
 	end
