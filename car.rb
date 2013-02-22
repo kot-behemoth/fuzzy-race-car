@@ -130,13 +130,13 @@ class Car < Chingu::GameObject
 		# 
 		#						 | R | C | L
 		#						-+---+---+---
-		#						R|   | L | C 
+		#						R| L | L | C 
 		#	distance	-+---+---+---
 		#						C| L | C | R 
 		#						-+---+---+---
-		#						L| C | R |   
+		#						L| C | R | R 
 
-		# engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :right  ).THEN( steering, :left )
+		engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :right  ).THEN( steering, :left )
 		engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :centre ).THEN( steering, :left )
 		engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :left   ).THEN( steering, :centre )
 
@@ -146,12 +146,7 @@ class Car < Chingu::GameObject
 
 		engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :right  ).THEN( steering, :centre )
 		engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :centre ).THEN( steering, :right )
-		# engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :left   ).THEN( steering, :right )
-		# engine.rules << Rule.new.IF( distance, :right ).AND.IF( delta, :left   ).THEN( steering, :right )
-
-		# engine.rules << Rule.new.IF( distance, :left ).THEN( steering, :right )
-		# engine.rules << Rule.new.IF( distance, :centre ).THEN( steering, :centre )
-		# engine.rules << Rule.new.IF( distance, :right ).THEN( steering, :left )
+		engine.rules << Rule.new.IF( distance, :left ).AND.IF( delta, :left   ).THEN( steering, :right )
 
 		engine
 	end
