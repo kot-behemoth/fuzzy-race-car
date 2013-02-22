@@ -17,15 +17,15 @@ class Game < Chingu::Window
 		@road = Road.create( :x => $window.width/2.0,
 												 :y => $window.height/2.0 )
 		@road.input = { :holding_left => :move_left,
-										:holding_right => :move_right,
-										:released_space => :toggle_oscillation }
+										:holding_right => :move_right }
 
 		retrofy
 		@car = Car.create( :x => $window.width/2.0,
 											 :y => $window.height/2.0,
 											 :image => Image['car.png'])
 		@car.input = { :holding_up => :increase_speed,
-									 :holding_down => :decrease_speed }
+									 :holding_down => :decrease_speed,
+									 :released_space => :pause }
 		@road.car = @car
 	end
 

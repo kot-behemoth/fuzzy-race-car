@@ -12,16 +12,19 @@ class Car < Chingu::GameObject
 	trait :retrofy
 	attr_accessor :speed, :screen_x, :screen_y, :text
 	attr_writer :road_x
-	attr_reader :previous_distance, :d
+	attr_reader :previous_distance, :d, :dd, :paused
 
 	def setup
 		super
 		@speed = 2
 		@d = 0
+		@dd = 0
+		@steering = 0
 		@previous_distance = 0
+		@paused = false
 		self.scale = 5
 		@engine = create_inference_engine
-		@text = Chingu::Text.new("Angle: {@angle}", :x => 10, :y => 10, :zorder => 55, :color => Color::RED, :factor_x => 2.0, :factor_y => 2.0)
+		@text = Chingu::Text.new("", :x => 10, :y => 10, :zorder => 55, :color => Color::RED, :factor_x => 2.0, :factor_y => 2.0)
 	end
 
 	def update
@@ -30,11 +33,22 @@ class Car < Chingu::GameObject
 		self.screen_x = @x
 		self.screen_y = @y
 
-		@velocity_x = Gosu.offset_x(@angle, @speed)
+		if @paused
+			@velocity_x = 0
+		else
+			@velocity_x = Gosu.offset_x(@angle, @speed)
+		end
 
 		update_fuzzy
 
-		@text.text = "Distance: #{d.round(2)}\nAngle: #{@angle.round(2)}"
+		@text.text = "Press SPACE to pause to adjust the inputs manually\n\
+Distance: #{d.round(3)}\n\
+Delta: #{dd.round(3)}\n\
+Steering: #{@steering.round(3)}"
+	end
+
+	def pause
+		@paused = !@paused
 	end
 
 	def update_fuzzy()
@@ -47,7 +61,9 @@ class Car < Chingu::GameObject
 		distance_n = distance / $window.width
 		distance_var.crisp_input = distance_n
 		@d = distance_n
-		delta_var.crisp_input = (distance - @previous_distance)/MAX_DELTA
+		delta_n = (distance - @previous_distance)/MAX_DELTA
+		delta_var.crisp_input = delta_n
+		@dd = delta_n
 
 		@previous_distance = distance
 
@@ -55,6 +71,7 @@ class Car < Chingu::GameObject
 		@engine.infer
 
 		# Update outputs
+		@steering = steering_var.crisp_output
 		new_angle = steering_var.crisp_output * MAX_ANGLE
 		raise "New angle is crazy: #{new_angle}!" if new_angle.nan? or new_angle < -65 or new_angle > 65
 		@angle = new_angle
