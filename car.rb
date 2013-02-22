@@ -102,7 +102,7 @@ class Car < Chingu::GameObject
 
 		distance = LinguisticVariable.create 'distance' do
 			add_mf Triangle.new(:left, 		-1, -1, 0)
-			add_mf Triangle.new(:centre, 	-0.25, 0, 0.25)
+			add_mf Triangle.new(:centre, 	-0.1, 0, 0.1)
 			add_mf Triangle.new(:right, 	 0, 1, 1)
 		end
 
